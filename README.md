@@ -32,6 +32,7 @@
     6. [Evolve](#evolve)
         1. [Display readme on evolve](#display-readme-on-evolve)
         2. [Evolve from vim.org](#evolve-from-vim.org)
+6. [Spread the work](#spread-the-word)
 
 ## Release notes
 
@@ -294,3 +295,14 @@ you need to create a `.metainfos` file at the root of the plugin directory
 
 +   `atool` is required for upgrading scripts from vim.org, see
     [Requirements](#requirements).
+
+# Spread the word
+
+If you like Vizardry and you are also a vimscript developper, an easy way to
+spread the word is to add a Vizardry install section to your plugins README
+for instance:
+
+If you have installed [Vizardry](https://github.com/dbeniamine/vizardry) just
+run the following from vim:
+
+    :Invoke -u <your_username> <your_plugin_name>

@@ -34,6 +34,7 @@ Table of Contents                                         *Vizardry-contents* ~
         5.6 Evolve.................................|:Evolve|
             5.6.1 View readme on evolve............|Vizardry-viewReadmeOnEvolve|
             5.6.2 Evolve from vim.org..............|Vizardry-evolveVim.org|
+    6; Spread the word ............................|Vizardry-spread|
 
 ===============================================================================
 Release notes                                         *Vizardry-releaseNotes* ~
@@ -289,3 +290,16 @@ The plugins downloaded from github are upgraded by doing:
 
     Note: `atool` is required for upgrading scripts from vim.org, (see
     |Vizardry-Requirements|).
+
+===============================================================================
+Spread the word                                             *Vizardry-spread* ~
+
+If you like Vizardry and you are also a vimscript developper, an easy way to
+spread the word is to add a Vizardry install section to your plugins README
+for instance:
+
+If you have installed [Vizardry](https://github.com/dbeniamine/vizardry) just
+run the following from vim:
+>
+    :Invoke -u <your_username> <your_plugin_name>
+<
