@@ -170,7 +170,7 @@ function! vizardry#remote#InitLists(input)
       let query.='+user:'.user
     endif
     call vizardry#echo("Searching for ".query."...",'s')
-    let query.='+language:viml+'.g:VizardrySearchOptions
+    let query.='+vim+'.g:VizardrySearchOptions
     call vizardry#echo("(actual query: '".query."')",'')
     " Do query
     let curlResults = system(
