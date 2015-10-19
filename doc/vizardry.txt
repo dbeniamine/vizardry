@@ -45,7 +45,7 @@ Current Version: 1.3.2
   method (using `:input()`, instead of `:getchar()`), for the user the result
   is that it is now necessary to hit 'enter' after answering a prompt from
   Vizardry
-* Since v1.1, `VizardrySortScryResults` is replaced by `VizardrySearchOptions`
+* Since v1.1, `VizardrySortScryResults` is replaced by `Vizardry-searchOptions`
 
 ===============================================================================
 Intoduction                                           *Vizardry-introduction* ~
@@ -180,7 +180,7 @@ Vizardry Commands                                         *Vizardry-commands* ~
 
                                                      *Vizardry-sortScryResults*
 
-    Since v1.1, `VizardrySortScryResults` is replaced by |VizardrySearchOptions|
+    Since v1.1, `VizardrySortScryResults` is replaced by |Vizardry-searchOptions|
 
 
 :Invoke [<query>|N]                                                   *:Invoke*
