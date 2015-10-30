@@ -206,8 +206,8 @@ function! vizardry#remote#Invoke(input)
     return
   endif
 
-  if a:input =~ "[0-9][0-9]*"
-  let inputNumber = str2nr(a:input)
+  if a:input =~ '^\d\+$'
+    let inputNumber = str2nr(a:input)
     " Input is a number search from previous search results
     if exists("g:vizardry#siteList") && inputNumber < len(g:vizardry#siteList)
           \|| a:input=="0"
