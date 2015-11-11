@@ -49,6 +49,12 @@ function! vizardry#echo(msg,type,...)
     let group='Question'
   elseif a:type=='s'
     let group='Define'
+  elseif a:type=='D'
+    if !exists("g:VizardryDebug")
+      return
+    else
+      let group='WarningMsg'
+    endif
   else
     let group='Normal'
   endif

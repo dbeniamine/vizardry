@@ -177,10 +177,12 @@ function! vizardry#remote#InitLists(input)
           \ 'curl -silent https://api.github.com/search/repositories?q='.query)
     " Prepare list (sites and descriptions)
     let curlResults = substitute(curlResults, 'null,','"",','g')
+    call  vizardry#echo(curlResults,'D' )
     let site = system('grep "full_name" | head -n '.g:VizardryNbScryResults,
           \ curlResults)
     let site = substitute(site, '\s*"full_name"[^"]*"\([^"]*\)"[^\n]*','\1','g')
     let g:vizardry#siteList = split(site, '\n')
+    call  vizardry#echo(g:vizardry#siteList,'D' )
 
     let description = system('grep "description" | head -n '.
           \ g:VizardryNbScryResults, curlResults)
@@ -188,6 +190,7 @@ function! vizardry#remote#InitLists(input)
           \ '\s*"description"[^"]*"\([^"\\]*\(\\.[^"\\]*\)*\)"[^\n]*','\1','g')
     let description = substitute(description, '\\"', '"', 'g')
     let g:vizardry#descriptionList = split(description, '\n')
+    call  vizardry#echo(g:vizardry#descriptionList,'D' )
     let ret=len(g:vizardry#siteList)
     if ret == 0
       call vizardry#echo("No results found for query '".a:input."'",'w')
