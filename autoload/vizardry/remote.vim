@@ -82,15 +82,15 @@ endfunction
 " Display Readme {{{2
 function! vizardry#remote#DisplayReadme(site)
   call vizardry#echo("Looking for README url",'s')
-  let readmeurl=system('curl -silent https://api.github.com/repos/'.
-        \ a:site.'/readme | grep download_url')
+  let readmeurl=system("curl -silent 'https://api.github.com/repos/".
+        \ a:site."/readme' | grep download_url")
   let readmeurl=substitute(readmeurl,
         \ '\s*"download_url"[^"]*"\(.*\)",.*','\1','')
   call vizardry#echo("Retrieving README",'s')
   if readmeurl == ""
     call vizardry#echo("No readme found",'e')
   else
-    execute ':!curl -silent '.readmeurl.' | sed "1,/^$/ d" | '.
+    execute ":!curl -silent '".readmeurl."'".' | sed "1,/^$/ d" | '.
           \ g:VizardryReadmeReader
   endif
 endfunction
@@ -174,7 +174,7 @@ function! vizardry#remote#InitLists(input)
     call vizardry#echo("(actual query: '".query."')",'')
     " Do query
     let curlResults = system(
-          \ 'curl -silent https://api.github.com/search/repositories?q='.query)
+          \"curl -silent 'https://api.github.com/search/repositories?q=".query."'")
     " Prepare list (sites and descriptions)
     let curlResults = substitute(curlResults, 'null,','"",','g')
     call  vizardry#echo(curlResults,'D' )
