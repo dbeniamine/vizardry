@@ -60,8 +60,8 @@ function! vizardry#remote#grabRepo(site, name)
     let l:precmd=':!'
     let l:path=g:vizardry#bundleDir
   endif
-  execute l:precmd.' git '.g:VizardryGitMethod.' https://github.com/'.
-        \ a:site.' '.l:path.'/'.a:name.l:commit
+  execute l:precmd." git ".g:VizardryGitMethod." 'https://github.com/".
+        \ a:site."' ".l:path."/".a:name.l:commit
 endfunction
 
 " Test existing repo {{{2
