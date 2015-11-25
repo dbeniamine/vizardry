@@ -34,6 +34,10 @@ if !exists("g:VizardryReadmeReader")
   let g:VizardryReadmeReader='view -c "set ft=markdown" -'
 endif
 
+if !exists("g:VizardryHelpReader")
+  let g:VizardryHelpReader='view -c "set ft=help" -'
+endif
+
 " Git api search options see
 " https://developer.github.com/v3/search/#search-repositories
 if !exists("g:VizardrySearchOptions")
@@ -88,11 +92,21 @@ function! vizardry#remote#DisplayReadme(site)
         \ '\s*"download_url"[^"]*"\(.*\)",.*','\1','')
   call vizardry#echo("Retrieving README",'s')
   if readmeurl == ""
-    call vizardry#echo("No readme found",'e')
+    call vizardry#echo("No readme found",'w')
+    call vizardry#echo("Looking for help file url",'s')
+    let name=substitute(a:site,'.*/\([^\.]*\).*','\1','')
+    let readmeurl='https://raw.githubusercontent.com/'.a:site.
+          \'/master/doc/'.name.'.txt'
+    let fourofour=system('curl -silent -I '.readmeurl.' | grep 404')
+    if fourofour != ""
+      call vizardry#echo("No help file found, aborting", "e")
+      return
+    endif
+    let reader=g:VizardryHelpReader
   else
-    execute ":!curl -silent '".readmeurl."'".' | sed "1,/^$/ d" | '.
-          \ g:VizardryReadmeReader
+    let reader=g:VizardryReadmeReader
   endif
+  execute ":!curl -silent '".readmeurl."'".' | sed "1,/^$/ d" | '.reader
 endfunction
 
 

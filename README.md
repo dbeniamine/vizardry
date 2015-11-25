@@ -206,14 +206,6 @@ Press Y and you can immediately start surrounding things.  You can also take a
 look at the README.md directly in vim by hitting 'd', Go to the next or
 previous script with 'n' and 'p' or abort 'a'. It's that easy.
 
-### Display readme on Invoke
-
-To view the readme, an other instance of vim is called, the command line can
-be configured:
-
-    let g:VizardryReadmeReader='view -c "set ft=markdown" -'
-
-
 Even plugins with vague or silly names can be found with Vizardry. Imagine
 you're running multiple instances of vim and need a package to sync registers.
 
@@ -229,6 +221,19 @@ Vizardry will prompt you with:
     Clone as "syncregisters"? (Yes/Rename/DisplayMore/Next/Previous/Abort)
 
 Just as easy.
+
+### Display readme on Invoke
+
+To view the readme, an other instance of vim is called, the command line can
+be configured:
+
+    let g:VizardryReadmeReader='view -c "set ft=markdown" -'
+
+If no readme is available, Vizardry will look for the main help file, the
+and if such a file is found will also call an other instance of vim that
+can be configured:
+
+    let g:VizardryHelpReader='view -c "set ft=help" -'
 
 ### Banish
 
