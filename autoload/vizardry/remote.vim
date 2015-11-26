@@ -97,7 +97,7 @@ function! vizardry#remote#DisplayReadme(site)
     let name=substitute(a:site,'.*/\([^\.]*\).*','\1','')
     let readmeurl='https://raw.githubusercontent.com/'.a:site.
           \'/master/doc/'.name.'.txt'
-    let fourofour=system('curl -silent -I '.readmeurl.' | grep 404')
+    let fourofour=system("curl -silent -I '".readmeurl."' | grep 404")
     if fourofour != ""
       call vizardry#echo("No help file found, aborting", "e")
       return
