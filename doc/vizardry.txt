@@ -19,30 +19,34 @@ Table of Contents                                         *Vizardry-contents* ~
         2.2 Requirements...........................|Vizardry-requirements|
         2.3 Installation...........................|Vizardry-installation|
         2.4 License................................|Vizardry-License|
-    4. Submodules..................................|Vizardry-submodule|
-    5. Commands....................................|Vizardry-commands|
-        5.1 Scry...................................|:Scry|
-            5.1.1 Nb results.......................|Vizardry-nbScryResults|
-            5.1.2 Query............................|Vizardry-query|
-            5.1.3 Search Options...................|Vizardry-searchOptions|
-            5.1.4 Sort results.....................|Vizardry-sortScryResults|
-        5.2 Invoke.................................|:Invoke|
-            5.2.1 Readme Reader....................|Vizardry-readmeReader|
-            5.2.2 Help Reader......................|Vizardry-helpReader|
-            5.2.3 Readme Help fallback............|Vizardry-ReadmeHelpFallback|
-        5.3 Banish.................................|:Banish|
-        5.4 Unbanish...............................|:Unbanish|
-        5.5 Vanish.................................|:Vanish|
-        5.6 Evolve.................................|:Evolve|
-            5.6.1 View readme on evolve............|Vizardry-viewReadmeOnEvolve|
-            5.6.2 Evolve from vim.org..............|Vizardry-evolveVim.org|
-    6; Spread the word ............................|Vizardry-spread|
+    3. Submodules..................................|Vizardry-submodule|
+    4. Commands....................................|Vizardry-commands|
+        4.1 Scry...................................|:Scry|
+        4   5.1.1 Nb results.......................|Vizardry-nbScryResults|
+        4   5.1.2 Query............................|Vizardry-query|
+        4   5.1.3 Search Options...................|Vizardry-searchOptions|
+        4   5.1.4 Sort results.....................|Vizardry-sortScryResults|
+        4.2 Invoke.................................|:Invoke|
+        4   5.2.1 Readme Reader....................|Vizardry-readmeReader|
+        4   5.2.2 Help Reader......................|Vizardry-helpReader|
+        4   5.2.3 Readme Help fallback............|Vizardry-ReadmeHelpFallback|
+        4.3 Banish.................................|:Banish|
+        4.4 Unbanish...............................|:Unbanish|
+        4.5 Vanish.................................|:Vanish|
+        4.6 Evolve.................................|:Evolve|
+        4   5.6.1 View readme on evolve............|Vizardry-viewReadmeOnEvolve|
+        4   5.6.2 Evolve from vim.org..............|Vizardry-evolveVim.org|
+        4.7 Scry...................................|:Vizardry|
+    5. Spread the word ............................|Vizardry-spread|
 
 ===============================================================================
 Release notes                                         *Vizardry-releaseNotes* ~
 
-Current Version: 1.3.2
+Current Version: 1.4
 
+* v1.4 provides several bug fix and the capability of seeing help files from
+ Invoke and Evolve prompt. It also add the command `:Vizardry` to show version
+ and basic usage.
 * v1.3 allow to Invoke directly from Scry, to do so, I had to modify the input
   method (using `:input()`, instead of `:getchar()`), for the user the result
   is that it is now necessary to hit 'enter' after answering a prompt from
@@ -306,6 +310,13 @@ The plugins downloaded from github are upgraded by doing:
 
     Note: `atool` is required for upgrading scripts from vim.org, (see
     |Vizardry-Requirements|).
+
+
+                                                                    *:Vizardry*
+:Vizardry
+
+    Show a basic usage and Vizardry version.
+
 
 ===============================================================================
 Spread the word                                             *Vizardry-spread* ~

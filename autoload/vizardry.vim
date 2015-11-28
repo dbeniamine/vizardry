@@ -68,6 +68,20 @@ function! vizardry#echo(msg,type,...)
   return ret
 endfunction
 
+function! vizardry#usage()
+  call vizardry#echo("Welcome to vizardry ".g:loaded_vizardry,"q")
+  echo "\n"
+  call vizardry#echo("You can search and list plugins with :Scry","n")
+  call vizardry#echo("or install them with :Invoke.","n")
+  echo "\n"
+  call vizardry#echo("Then it is possible to temporay :Banish a plugin","n")
+  call vizardry#echo("or even :Vanish it completly.","n")
+  echo "\n"
+  call vizardry#echo("You can also :Evolve on or all of them","n")
+  echo "\n"
+  call vizardry#echo("For more info look at :help vizardry","w")
+endfunction
+
 function! vizardry#listChoices(choices)
   let length = len(a:choices)
   if length == 0

@@ -19,8 +19,8 @@
     2. [Requirements](#requirements)
     3. [Installation](#installation)
     4. [License](#license)
-4. [Submodules](#how-to-use-vizardry-with-submodules)
-5. [Commands](#commands)
+3. [Submodules](#how-to-use-vizardry-with-submodules)
+4. [Commands](#commands)
     1. [Scry](#scry)
         1. [Number of results](#number-of-results)
         2. [Queries](#queries)
@@ -33,12 +33,15 @@
     6. [Evolve](#evolve)
         1. [Display readme on evolve](#display-readme-on-evolve)
         2. [Evolve from vim.org](#evolve-from-vim.org)
-6. [Spread the work](#spread-the-word)
+    7. [Vizardry](#vizardry-cmd)
+5. [Spread the work](#spread-the-word)
 
 ## Release notes
 
-Current Version: 1.3.2
+Current Version: 1.4
 
+* v1.4 provides several bug fix and the capability of seeing help files from
+ Invoke and Evolve prompt.
 * v1.3 allow to Invoke directly from Scry, to do so, I had to modify the input
   method (using `:input()`, instead of `:getchar()`), for the user the result
   is that it is now necessary to hit 'enter' after answering a prompt from
@@ -305,6 +308,12 @@ you need to create a `.metainfos` file at the root of the plugin directory
 
 +   `atool` is required for upgrading scripts from vim.org, see
     [Requirements](#requirements).
+
+### <a name="vizardry-cmd">Vizardry</a>
+
+`:Vizardry`
+
+Show a basic usage and Vizardry version.
 
 # Spread the word
 

@@ -24,7 +24,7 @@ endif
 let g:save_cpo = &cpo
 set cpo&vim
 
-let g:loaded_vizardry = 1
+let g:loaded_vizardry = "v1.4"
 
 " Plugin Settings {{{1
 
@@ -50,6 +50,7 @@ elseif (g:VizardryGitMethod =="submodule add")
 endif
 
 " Commands definitions {{{1
+command! -nargs=0 Vizardry call vizardry#usage()
 command! -nargs=? Invoke call vizardry#remote#Invoke(<q-args>)
 command! -nargs=? -complete=custom,vizardry#ListAllInvoked Banish
       \ call vizardry#local#Banish(<q-args>, 'Banish')
