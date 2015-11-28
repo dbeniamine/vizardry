@@ -29,6 +29,7 @@ Table of Contents                                         *Vizardry-contents* ~
         5.2 Invoke.................................|:Invoke|
             5.2.1 Readme Reader....................|Vizardry-readmeReader|
             5.2.2 Help Reader......................|Vizardry-helpReader|
+            5.2.3 Readme Help fallback............|Vizardry-ReadmeHelpFallback|
         5.3 Banish.................................|:Banish|
         5.4 Unbanish...............................|:Unbanish|
         5.5 Vanish.................................|:Vanish|
@@ -208,11 +209,12 @@ Vizardry Commands                                         *Vizardry-commands* ~
         Result 1/20 tpope/vim-surround
         (surround.vim: quoting/parenthesizing made simple)
 
-        Clone as "surround"? (Yes/Rename/DisplayMore/Next/Previous/Abort)
+        Clone as "surround"? (Yes/Rename/Displayreadme/displayHelp/Next/Previous/Abort)
 <
     Press Y and you can immediately start surrounding things.  You can also
-    take a look at the README.md directly in vim by hitting 'd', Go to the
-    next or previous script with 'n' and 'p' or abort 'a'. It's that easy.
+    take a look at the README.md directly in vim by hitting `d` or at the help
+    using `h`, Go to the next or previous script with `n` and `p` or abort
+    `a`. It's that easy.
 
     Even plugins with vague or silly names can be found with Vizardry. Imagine
     you're running multiple instances of vim and need a package to sync
@@ -235,12 +237,18 @@ Vizardry Commands                                         *Vizardry-commands* ~
 >
         let g:VizardryReadmeReader='view -c "set ft=markdown" -'
 <
-    If no readme is available, Vizardry will look for the main help file, the
-    and if such a file is found will also call an other instance of vim that
-    can be configured:
+                                                          *Vizardry-helpReader*
+    The help file reader is also configurable, there is the default:
 
 >
         let g:VizardryHelpReader='view -c "set ft=help" -'
+
+<
+                                                  *Vizardry-ReadmeHelpFallback*
+    Finally if readme or help is missing, Vizardry will try to search for the
+    other one, if you dont like this behavior, you can prevent it:
+>
+        let g:VizardryReadmeHelpFallback = 0
 <
 
 :Banish <keyword>                                                     *:Banish*
@@ -266,14 +274,14 @@ The plugins downloaded from github are upgraded by doing:
         git pull origin master
 <
                                                   *Vizardry-viewReadmeOnEvolve*
-    Sometimes it can be a good idea to take a quick look at a plugin's README
-    or git log when updating, to do so, add the following to your vimrc:
+    Sometimes it can be a good idea to take a quick look at a plugin's README,
+    help or git log when updating, to do so, add the following to your vimrc:
 >
         let g:VizardryViewReadmeOnEvolve=1
 <
 
-    `:Evolve` will then ask you to display readme or log each time a plugin is
-    upgraded.
+    `:Evolve` will then ask you to display readme, help or log each time a
+    plugin is upgraded.
 
                                                        *Vizardry-evolveVim.org*
     Although the following method works fine, it is recommended to always install
