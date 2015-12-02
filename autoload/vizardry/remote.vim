@@ -94,24 +94,32 @@ function! vizardry#remote#readurl(reader,url)
   execute ":!curl -silent '".a:url."'".' | sed "1,/^$/ d" | '.a:reader
 endfunction
 
+" Get the current branch of a repo
+function! vizardry#remote#currentBranch(path)
+  if a:path == ""
+    return "master"
+  endif
+  return system("cd ".a:path."; git branch | grep '^*' | sed 's/^* //' | tr -d  '\n'")
+endfunction
+
 " Display Help for site {{{2
-function! vizardry#remote#DisplayHelp(site,noRec)
+function! vizardry#remote#DisplayHelp(site,noRec,path)
   call vizardry#echo("Looking for help file url",'s')
   let name=substitute(a:site,'.*/\([^\.]*\).*','\1','')
   let url='https://raw.githubusercontent.com/'.a:site.
-        \'/master/doc/'.name.'.txt'
+        \'/'.vizardry#remote#currentBranch(a:path).'/doc/'.name.'.txt'
   let fourofour=system("curl -silent -I '".readmeurl."' | grep 404")
   if fourofour != ""
     call vizardry#echo("No help file found", "e")
     if a:fallback == 1
-      call vizardry#remote#DisplayReadme(a:site,0)
+      call vizardry#remote#DisplayReadme(a:site,0,a:path)
     endif
   endif
   call vizardry#remote#readurl(g:VizardryHelpReader,url)
 endfunction
 
 " Display Readme {{{2
-function! vizardry#remote#DisplayReadme(site,fallback)
+function! vizardry#remote#DisplayReadme(site,fallback,path)
   call vizardry#echo("Looking for README url",'s')
   let readmeurl=system("curl -silent 'https://api.github.com/repos/".
         \ a:site."/readme' | grep download_url")
@@ -121,7 +129,7 @@ function! vizardry#remote#DisplayReadme(site,fallback)
   if readmeurl == ""
     call vizardry#echo("No readme found",'w')
     if a:fallback == 1
-      call vizardry#remote#DisplayHelp(a:site,0)
+      call vizardry#remote#DisplayHelp(a:site,0,a:path)
     endif
   else
     call vizardry#remote#readurl(g:VizardryReadmeReader, readmeurl)
@@ -177,9 +185,9 @@ function! vizardry#remote#handleInvokation(site, description, inputNice, index)
       let ret=a:index+1
       let valid = 1
     elseif response ==? 'd'
-      call vizardry#remote#DisplayReadme(a:site,g:VizardryReadmeHelpFallback)
+      call vizardry#remote#DisplayReadme(a:site,g:VizardryReadmeHelpFallback,"")
     elseif response ==? 'h'
-      call vizardry#remote#DisplayHelp(a:site,g:VizardryReadmeHelpFallback)
+      call vizardry#remote#DisplayHelp(a:site,g:VizardryReadmeHelpFallback,"")
     elseif response ==? 'a'
       let valid=1
     elseif response ==? 'p'
@@ -313,12 +321,33 @@ endfunction
 " Evolve {{{2
 
 " Upgrade a specific plugin (git repo)
-function s:GitEvolve(path)
-  let l:ret=system('cd '.a:path.' && git pull origin master')
+function s:GitEvolve(path, branch)
+  let curbranch=vizardry#remote#currentBranch(a:path)
+  let commitreq=0
+  " Specific branch required ?
+  if a:branch != ""
+    if curbranch != a:branch
+      if empty(system('cd '.a:path.' && git branch | grep '.a:branch))
+        " Create a branch
+        let checkoutArg=' -b '
+      else
+        " Existing branch
+        let checkoutArg=' '
+      endif
+      call system("cd ".a:path."; git checkout".checkoutArg.a:branch)
+      " Force commiting
+      let commitreq=1
+    endif
+    let curbranch=a:branch
+  endif
+  " Do upgrade
+  let l:ret=system('cd '.a:path.' && git pull origin '.curbranch )
   call vizardry#echo(l:ret,'')
-  if l:ret=~'Already up-to-date'
+  " Do we need a commit ?
+  if commitreq==0 && l:ret=~'Already up-to-date'
     return ''
   endif
+  " Handle readme/log/help display
   if g:VizardryViewReadmeOnEvolve == 1
     let continue=0
     let name=substitute(substitute(a:path,'.*/','',''),'\.git','','')
@@ -331,9 +360,9 @@ function s:GitEvolve(path)
         let l:site=substitute(site,'.*github\.com.\(.*\)','\1','')
         let l:site=substitute(site,'\(.*\).git','\1','')
         if response ==? 'r'
-          call vizardry#remote#DisplayReadme(site,g:VizardryReadmeHelpFallback)
+          call vizardry#remote#DisplayReadme(site,g:VizardryReadmeHelpFallback,a:path)
         else
-          call vizardry#remote#DisplayHelp(site,g:VizardryReadmeHelpFallback)
+          call vizardry#remote#DisplayHelp(site,g:VizardryReadmeHelpFallback,a:path)
         endif
       elseif response ==? 'l'
         execute ':!cd '.a:path .' && git log'
@@ -342,6 +371,7 @@ function s:GitEvolve(path)
       endif
     endwhile
   endif
+  " Return upgraded path
   return a:path
 endfunction
 
@@ -371,14 +401,20 @@ function! vizardry#remote#Evolve(input, rec)
     endfor
   else
     " Try evolve a particular plugin
-    let inputNice = substitute(a:input, '\s\s*', '', 'g')
+    let inarray=split(substitute(a:input, '^\s\s*', '', ''), '\s\s*')
+    let inputNice=inarray[0]
+    if len(inarray) >= 2
+      let branch=inarray[1]
+    else
+      let branch=""
+    endif
     let exists = vizardry#testBundle(inputNice)
     if !exists
       call vizardry#echo("No plugin named '".inputNice."', aborting upgrade",'e')
       return
     endif
     if glob(g:vizardry#bundleDir.'/'.inputNice.'/.git')!=""
-      let l:files=s:GitEvolve(g:vizardry#bundleDir.'/'.inputNice)
+      let l:files=s:GitEvolve(g:vizardry#bundleDir.'/'.inputNice, branch)
     else
       let l:files=s:VimOrgEvolve(g:vizardry#bundleDir.'/'.inputNice)
     endif
@@ -401,6 +437,25 @@ function! vizardry#remote#Evolve(input, rec)
     endif
   else
     return l:files
+  endif
+endfunction
+
+
+" Evolve completion:
+" arg1: Invoked plugin
+" arg2: Available branch
+function! vizardry#remote#EvolveCompletion(A,L,P)
+  if a:L =~ '^\s*\S\S*\s\s*\S\S*\s\s*'
+    let bundle=substitute(a:L,'\s*\S\S*\s\s*\(\S\S*\)\s.*', '\1','')
+    let path=g:vizardry#bundleDir.'/'.bundle
+    if !empty(glob(path))
+      return system('cd '.path.'; git ls-remote --heads 2>/dev/null'.
+            \' | sed "s/.*heads\///"')
+    else
+      return ""
+    endif
+  else
+    return vizardry#ListAllInvoked(a:A,a:L,a:P)
   endif
 endfunction
 
@@ -435,5 +490,6 @@ function! vizardry#remote#Scry(input)
     endif
   endif
 endfunction
+
 
 " vim:set et sw=2:

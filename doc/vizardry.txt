@@ -268,15 +268,18 @@ Vizardry Commands                                         *Vizardry-commands* ~
 
         Remove definitively a plugin's files.
 
-:Evolve  [<keyword>]                                                  *:Evolve*
+:Evolve  [<keyword> [<branch>]]                                       *:Evolve*
 
-    Upgrade the plugin matching <keyword>. If no <keyword> is given, upgrade
-    all possible plugins.
+    Upgrade the plugin matching <keyword> using remote branch <branch> if
+    specified.
+    If no <keyword> is given, upgrade all possible plugins.
 
-The plugins downloaded from github are upgraded by doing:
->
-        git pull origin master
-<
+    Git plugins are upgraded by doing `git pull origin branch`. Where
+    `branch` the one specified in argument if any or the current branch of the
+    local repository.  If `branch` is different from the current branch,
+    Vizardry will first create or checkout a local branch with the same name
+    as the remote branch requested.
+
                                                   *Vizardry-viewReadmeOnEvolve*
     Sometimes it can be a good idea to take a quick look at a plugin's README,
     help or git log when updating, to do so, add the following to your vimrc:

@@ -264,14 +264,16 @@ Remove definitively a plugin's files.
 
 ### Evolve
 
-`:Evolve  [<keyword>]`
+`:Evolve  [<keyword> [<branch>]]`
 
-Upgrade the plugin matching &lt;keyword&gt;. If no &lt;keyword&gt; is given, upgrade
+Upgrade the plugin matching &lt;keyword&gt; using remote branche
+&lt;branch&gt; if specified. If no &lt;keyword&gt; is given, upgrade
 all possible plugins.
 
-The plugins downloaded from github are upgraded by doing:
-
-    git pull origin master
+Git plugins are upgraded by doing `git pull origin branch`. Where  `branch` the
+one specified in argument if any or the current branch of the local repository.
+If `branch` is different from the current branch, Vizardry will first create
+or checkout a local branch with the same name as the remote branch requested.
 
 #### Display Readme On Evolve
 
