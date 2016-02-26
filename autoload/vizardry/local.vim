@@ -96,7 +96,9 @@ function! vizardry#local#Banish(input, type)
         else
           let l:cmd='cd '.g:VizardryGitBaseDir.' && git submodule deinit -f '.
                 \ g:vizardry#relativeBundleDir.'/'.aMatch.' && git rm -rf '.
-                \ g:vizardry#relativeBundleDir.'/'.aMatch.l:commit
+                \ g:vizardry#relativeBundleDir.'/'.aMatch.
+                \ ' && rm -rf .git/modules/'.g:vizardry#relativeBundleDir.'/'.
+                \ aMatch.l:commit
         endif
       else
         if a:type== 'Banish'
