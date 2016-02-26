@@ -70,8 +70,11 @@ function! vizardry#remote#grabRepo(site, name)
     let l:precmd=':!'
     let l:path=g:vizardry#bundleDir
   endif
+  let l:bundle=l:path."/".a:name
   execute l:precmd." git ".g:VizardryGitMethod." 'https://github.com/".
-        \ a:site."' ".l:path."/".a:name.l:commit
+        \ a:site."' ".l:bundle.' && cd '.l:bundle.
+        \ ' && git submodule init && git submodule update && cd '.
+        \   g:VizardryGitBaseDir.l:commit
 endfunction
 
 " Test existing repo {{{2
@@ -341,7 +344,8 @@ function s:GitEvolve(path, branch)
     let curbranch=a:branch
   endif
   " Do upgrade
-  let l:ret=system('cd '.a:path.' && git pull origin '.curbranch )
+  let l:submodule=' && git submodule init && git submodule update'
+  let l:ret=system('cd '.a:path.' && git pull origin '.curbranch.l:submodule)
   call vizardry#echo(l:ret,'')
   " Do we need a commit ?
   if commitreq==0 && l:ret=~'Already up-to-date'
