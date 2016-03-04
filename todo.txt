@@ -1,0 +1,5 @@
+(A) +Grimoires Issue / call for pull request
+(A) +Grimoires Documentation
+(A) +Grimoires bitbucket provider
+(A) +Grimoires hooks for gitlabs provider
+(B) +cvs Documentation cvs abstraction, call for pull request
