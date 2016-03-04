@@ -21,6 +21,9 @@ if !exists("g:loaded_vizardry")
   finish
 endif
 
+let g:save_cpo = &cpo
+set cpo&vim
+
 " To add a grimoire (provider):
 "  + create a file autoload/vizardry/mygrimoire.vim which implement each of
 "   the function described below:
@@ -78,4 +81,5 @@ function! vizardry#grimoire#SiteFromOrigin(origin,baseurl)
   return substitute(site,'\(.*\).git$','\1','')
 endfunction
 
+let cpo=save_cpo
 " vim:set et sw=2:

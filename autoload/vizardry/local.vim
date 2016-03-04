@@ -1,5 +1,4 @@
 " Vim plugin for installing other vim plugins.
-" Last Change: August 22 2015
 " Maintainer: David Beniamine
 "
 " Copyright (C) 2013, James Kolb. All rights reserved.
@@ -8,12 +7,12 @@
 " it under the terms of the GNU Affero General Public License as published by
 " the Free Software Foundation, either version 3 of the License, or
 " (at your option) any later version.
-" 
+"
 " This program is distributed in the hope that it will be useful,
 " but WITHOUT ANY WARRANTY; without even the implied warranty of
 " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 " GNU Affero General Public License for more details.
-" 
+"
 " You should have received a copy of the GNU Affero General Public License
 " along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -22,6 +21,8 @@ if !exists("g:loaded_vizardry")
   finish
 endif
 
+let g:save_cpo = &cpo
+set cpo&vim
 
 " Return the name of the bundle admitting that the origin address ends by
 " /name[.git]
@@ -163,4 +164,6 @@ endfunction
 function! vizardry#local#MagicVSplit(incantation)
   exec "vsplit ".vizardry#local#MagicName(a:incantation)."*"
 endfunction
+
+let cpo=save_cpo
 " vim:set et sw=2:

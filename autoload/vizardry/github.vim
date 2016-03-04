@@ -21,6 +21,9 @@ if !exists("g:loaded_vizardry")
   finish
 endif
 
+let g:save_cpo = &cpo
+set cpo&vim
+
 " This file provide the github provider API
 
 " Return the clone url for site/name
@@ -52,4 +55,6 @@ endfunction
 function! vizardry#github#GenerateQuery(input)
   return 'https://api.github.com/search/repositories?q='.a:input
 endfunction
+
+let cpo=save_cpo
 " vim:set et sw=2:

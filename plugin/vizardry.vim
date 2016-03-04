@@ -23,7 +23,7 @@ endif
 let g:save_cpo = &cpo
 set cpo&vim
 
-let g:loaded_vizardry = "v1.4"
+let g:loaded_vizardry = "v2.0b1"
 
 " Plugin Settings {{{1
 
@@ -73,4 +73,5 @@ command! -nargs=? -complete=custom,vizardry#ListAllInvoked Magicsplit
 command! -nargs=? -complete=custom,vizardry#ListAllInvoked Magicvsplit
       \ call vizardry#local#MagicVSplit(<q-args>)
 
+let cpo=save_cpo
 " vim:set et sw=2:

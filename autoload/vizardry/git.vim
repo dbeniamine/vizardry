@@ -21,6 +21,8 @@ if !exists("g:loaded_vizardry")
   finish
 endif
 
+let g:save_cpo = &cpo
+set cpo&vim
 
 " This file provides wrapper arount git commands to avoid git command
 " replication inside vizardry
@@ -147,4 +149,5 @@ else
   endfunction
 endif
 
+let cpo=save_cpo
 " vim:set et sw=2:

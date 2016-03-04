@@ -21,12 +21,15 @@ if !exists("g:loaded_vizardry")
   finish
 endif
 
-" Settings {{{1
+let g:save_cpo = &cpo
+set cpo&vim
 
-" Initialize grimoires
+" Settings {{{1
 if !exists("g:VizardryDefaultGrimoire")
   let g:VizardryDefaultGrimoire='github'
 endif
+
+" Initialize grimoires
 call vizardry#grimoire#SetGrimoire(g:VizardryDefaultGrimoire)
 
 " Number of results displayed by Scry
@@ -470,4 +473,5 @@ function! vizardry#remote#Scry(input)
   endif
 endfunction
 
+let cpo=save_cpo
 " vim:set et sw=2:

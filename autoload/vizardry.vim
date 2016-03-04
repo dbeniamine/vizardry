@@ -1,5 +1,4 @@
 " Vim plugin for installing other vim plugins.
-" Last Change: August 22 2015
 " Maintainer: David Beniamine
 "
 " Copyright (C) 2013, James Kolb. All rights reserved.
@@ -8,12 +7,12 @@
 " it under the terms of the GNU Affero General Public License as published by
 " the Free Software Foundation, either version 3 of the License, or
 " (at your option) any later version.
-" 
+"
 " This program is distributed in the hope that it will be useful,
 " but WITHOUT ANY WARRANTY; without even the implied warranty of
 " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 " GNU Affero General Public License for more details.
-" 
+"
 " You should have received a copy of the GNU Affero General Public License
 " along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -22,11 +21,14 @@ if !exists("g:loaded_vizardry")
   finish
 endif
 
+let g:save_cpo = &cpo
+set cpo&vim
+
 " Settings {{{1
 
 " A few path
 let g:vizardry#scriptDir = expand('<sfile>:p:h').'/..'
-let g:vizardry#bundleDir = substitute(g:vizardry#scriptDir, 
+let g:vizardry#bundleDir = substitute(g:vizardry#scriptDir,
       \'/[^/]*/[^/]*/[^/]*$', '', '')
 if exists("g:VizardryGitBaseDir")
   let g:vizardry#relativeBundleDir=substitute(
@@ -234,4 +236,5 @@ function! vizardry#ReloadScripts()
   execute ':Helptags'
 endfunction
 
+let cpo=save_cpo
 " vim:set et sw=2:
