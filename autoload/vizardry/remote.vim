@@ -1,5 +1,4 @@
 " Vim plugin for installing other vim plugins.
-" Last Change: August 22 2015
 " Maintainer: David Beniamine
 "
 " Copyright (C) 2013, James Kolb. All rights reserved.
@@ -8,12 +7,12 @@
 " it under the terms of the GNU Affero General Public License as published by
 " the Free Software Foundation, either version 3 of the License, or
 " (at your option) any later version.
-" 
+"
 " This program is distributed in the hope that it will be useful,
 " but WITHOUT ANY WARRANTY; without even the implied warranty of
 " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 " GNU Affero General Public License for more details.
-" 
+"
 " You should have received a copy of the GNU Affero General Public License
 " along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -23,6 +22,12 @@ if !exists("g:loaded_vizardry")
 endif
 
 " Settings {{{1
+
+" Initialize grimoires
+if !exists("g:VizardryDefaultGrimoire")
+  let g:VizardryDefaultGrimoire='github'
+endif
+call vizardry#grimoire#SetGrimoire(g:VizardryDefaultGrimoire)
 
 " Number of results displayed by Scry
 if !exists("g:VizardryNbScryResults")
@@ -186,30 +191,45 @@ endfunction
 
 " Query provider {{{2
 function! vizardry#remote#InitLists(input)
-    let query=g:VizardryGenerateQuery(a:input)
-    " Do query
-    let curlResults = system("curl -silent '".query."'")
-    " Prepare list (sites and descriptions)
-    let curlResults = substitute(curlResults, 'null,','"",','g')
-    call  vizardry#echo(curlResults,'D' )
-    let site = system('grep "full_name" | head -n '.g:VizardryNbScryResults,
-          \ curlResults)
-    let site = substitute(site, '\s*"full_name"[^"]*"\([^"]*\)"[^\n]*','\1','g')
-    let g:vizardry#siteList = split(site, '\n')
-    call  vizardry#echo(g:vizardry#siteList,'D' )
+  " Format query to github API
+  let user=substitute(a:input, '.*-u\s\s*\(\S*\).*','\1','')
+  let l:input=substitute(substitute(a:input, '-u\s\s*\S*','',''),
+        \'^\s\s*','','')
+  let g:vizardry#lastScry = substitute(l:input, '\s\s*', '', 'g')
+  let lastScryPlus = substitute(l:input, '\s\s*', '+', 'g')
+  let query=lastScryPlus
+  if match(a:input, '-u') != -1
+    let query=substitute(query,'+$','','') "Remove useless '+' if no keyword
+    let query.='+user:'.user
+  endif
+  call vizardry#echo("Searching for ".query."...",'s')
+  let query.='+vim+'.g:VizardrySearchOptions
+  call vizardry#echo("(actual query: '".query."')",'')
+  " Prepare query according to grimoire
+  let query=g:VizardryGenerateQuery(l:query)
+  " Do query
+  let curlResults = system("curl -silent '".query."'")
+  " Prepare list (sites and descriptions)
+  let curlResults = substitute(curlResults, 'null,','"",','g')
+  call  vizardry#echo(curlResults,'D' )
+  let site = system('grep "full_name" | head -n '.g:VizardryNbScryResults,
+        \ curlResults)
+  let site = substitute(site, '\s*"full_name"[^"]*"\([^"]*\)"[^\n]*','\1','g')
+  let g:vizardry#siteList = split(site, '\n')
+  call  vizardry#echo(g:vizardry#siteList,'D' )
 
-    let description = system('grep "description" | head -n '.
-          \ g:VizardryNbScryResults, curlResults)
-    let description = substitute(description,
-          \ '\s*"description"[^"]*"\([^"\\]*\(\\.[^"\\]*\)*\)"[^\n]*','\1','g')
-    let description = substitute(description, '\\"', '"', 'g')
-    let g:vizardry#descriptionList = split(description, '\n')
-    call  vizardry#echo(g:vizardry#descriptionList,'D' )
-    let ret=len(g:vizardry#siteList)
-    if ret == 0
-      call vizardry#echo("No results found for query '".a:input."'",'w')
-    endif
-    return ret
+  let description = system('grep "description" | head -n '.
+        \ g:VizardryNbScryResults, curlResults)
+  let description = substitute(description,
+        \ '\s*"description"[^"]*"\([^"\\]*\(\\.[^"\\]*\)*\)"[^\n]*','\1','g')
+  let description = substitute(description, '\\"', '"', 'g')
+  let g:vizardry#descriptionList = split(description, '\n')
+  call  vizardry#echo(g:vizardry#descriptionList,'D' )
+  let ret=len(g:vizardry#siteList)
+  if ret == 0
+    call vizardry#echo("No results found for query '".a:input."'",'w')
+  endif
+  return ret
 endfunction
 
 " Commands {{{ 1
@@ -296,16 +316,14 @@ function s:GitEvolve(path, branch)
   let curbranch=system(vizardry#git#GetCurrentBranch(a:path))
   let commitreq=0
   " Specific branch required ?
-  if a:branch != ""
-    if curbranch != a:branch
-      call vizardry#git#CheckoutBranch(a:path,a;branch)
-      " Force commiting
-      let commitreq=1
-    endif
-    let curbranch=a:branch
+  if curbranch != a:branch
+    call vizardry#git#CheckoutBranch(a:path,a:branch)
+    " Force commiting
+    let commitreq=1
   endif
+  let curbranch=a:branch
   " Do upgrade
-  let l:ret=vizardry#git#Upgrade(curbranch)
+  let l:ret=vizardry#git#Upgrade(a:path,curbranch)
   call vizardry#echo(l:ret,'')
   " Do we need a commit ?
   if commitreq==0 && l:ret=~'Already up-to-date'
@@ -314,19 +332,19 @@ function s:GitEvolve(path, branch)
   " Handle readme/log/help display
   if g:VizardryViewReadmeOnEvolve == 1
     let continue=0
-    let name=substitute(substitute(a:path,'.*/','',''),'\.git','','')
+    let name=vizardry#local#GetRepoName(a:path)
     while continue==0
-    let response=vizardry#doPrompt(name.' Evolved, show Readme, Log or Continue ? (r,l,c,h)',
-          \['r','l','c', 'h'])
+      let response=vizardry#doPrompt(name.' Evolved, show Readme, Log or Continue ? (r,l,c,h)',
+            \['r','l','c', 'h'])
       if response ==? 'r' || response ==? 'h'
-                let l:site=g:VizardrySiteFromOrigin(vizardry#git#GetOrigin(a:path))
+        let l:site=g:VizardrySiteFromOrigin(vizardry#git#GetOrigin(a:path))
         if response ==? 'r'
           let l:doctype='Readme'
         else
           let l:doctype='Help'
         endif
         call vizardry#remote#DisplayDoc(site,g:VizardryReadmeHelpFallback,
-                \a:path,l:doctype)
+              \a:path,l:doctype)
       elseif response ==? 'l'
         call vizardry#git#Log(a:path)
       elseif response ==? 'c'
@@ -369,14 +387,14 @@ function! vizardry#remote#Evolve(input, rec)
     if len(inarray) >= 2
       let branch=inarray[1]
     else
-      let branch=""
+      let branch="master"
     endif
     let exists = vizardry#testBundle(inputNice)
     if !exists
       call vizardry#echo("No plugin named '".inputNice."', aborting upgrade",'e')
       return
     endif
-    if glob(g:vizardry#bundleDir.'/'.inputNice.'/.git')!=""
+    if vizardry#git#IsAGitRepo(g:vizardry#bundleDir.'/'.inputNice)
       let l:files=s:GitEvolve(g:vizardry#bundleDir.'/'.inputNice, branch)
     else
       let l:files=s:VimOrgEvolve(g:vizardry#bundleDir.'/'.inputNice)
@@ -388,11 +406,10 @@ function! vizardry#remote#Evolve(input, rec)
     if l:files!=""
       let l:basefiles=substitute(
             \ substitute(l:files,g:vizardry#bundleDir.'/','','g'),'\s\s*', ' ','g')
-      if exists("g:VizardryGitBaseDir")
-        execute ':!'.'cd '.g:VizardryGitBaseDir.' && git commit -m"'.
-              \ g:VizardryCommitMsgs['Evolve'].' '.l:basefiles.'" '.
-              \ l:files.' .gitmodules'
-      else
+      let cmd=vizardry#git#CommitCmd(g:VizardryGitBaseDir,l:files,
+            \l:basefiles,'Evolve')
+      execute ':!'.cmd
+      if cmd == 'true'
         call vizardry#echo("Evolved plugins: ".l:files,'')
       endif
     else
@@ -410,10 +427,9 @@ endfunction
 function! vizardry#remote#EvolveCompletion(A,L,P)
   if a:L =~ '^\s*\S\S*\s\s*\S\S*\s\s*'
     let bundle=substitute(a:L,'\s*\S\S*\s\s*\(\S\S*\)\s.*', '\1','')
-    let path=g:vizardry#bundleDir.'/'.bundle
-    if !empty(glob(path))
-      return system('cd '.path.'; git ls-remote --heads 2>/dev/null'.
-            \' | sed "s/.*heads\///"')
+    let l:path=g:vizardry#bundleDir.'/'.bundle
+    if !empty(glob(l:path))
+      return vizardry#git#CompleteBranches(l:path)
     else
       return ""
     endif
@@ -453,6 +469,5 @@ function! vizardry#remote#Scry(input)
     endif
   endif
 endfunction
-
 
 " vim:set et sw=2:

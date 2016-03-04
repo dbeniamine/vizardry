@@ -22,6 +22,13 @@ if !exists("g:loaded_vizardry")
   finish
 endif
 
+
+" Return the name of the bundle admitting that the origin address ends by
+" /name[.git]
+function vizardry#local#GetRepoName(path)
+  return substitute(a:path,'.*/\([^\.]*\).*','\1','')
+endfunction
+
 " UnBannish {{{1
 function! vizardry#local#UnbanishCommand(bundle)
   let niceBundle = substitute(a:bundle, '\s\s*', '', 'g')
@@ -39,9 +46,9 @@ function! vizardry#local#UnbanishCommand(bundle)
     call vizardry#ReloadScripts()
   else
     if vizardry#ListInvoked(a:bundle)!=''
-     let msg='Bundle "'.niceBundle.'" is not banished.'
+      let msg='Bundle "'.niceBundle.'" is not banished.'
     else
-     let msg='Bundle "'.niceBundle.'" does not exist.'
+      let msg='Bundle "'.niceBundle.'" does not exist.'
     endif
     call vizardry#echo(msg,'w')
   endif

@@ -29,14 +29,14 @@ endif
 
 " Remove '\n' in git answers
 function! vizardry#git#RemoveEndline(line)
-    return strpart(a:line,0,len(a:line)-1)
+  return strpart(a:line,0,len(a:line)-1)
 endfunction
 
 " Get the origin repository addresses
 function! vizardry#git#GetOrigin(path)
-    let l:ret=system('(cd '.a:path.
-                \'&& git config --get remote.origin.url) 2>/dev/null')
-    return vizardry#git#RemoveEndline(l:ret)
+  let l:ret=system('(cd '.a:path.
+        \'&& git config --get remote.origin.url) 2>/dev/null')
+  return vizardry#git#RemoveEndline(l:ret)
 endfunction
 
 
@@ -44,55 +44,55 @@ endfunction
 
 " Function depending on git metchod used {{{1
 if(g:VizardryGitMethod == "clone")
-    " Return the path to a bundle {{{2
-    " The first element of the list is the base path (from which we execute
-    " commands)
-    " The second is the path to the bundle
-    function! vizardry#git#PathToBundleAsList(bundle)
-        return [g:vizardry#bundleDir,a:bundle]
-    endfunction
+  " Return the path to a bundle {{{2
+  " The first element of the list is the base path (from which we execute
+  " commands)
+  " The second is the path to the bundle
+  function! vizardry#git#PathToBundleAsList(bundle)
+    return [g:vizardry#bundleDir,a:bundle]
+  endfunction
 
-    " Return the commit command as a string {{{2
-    function vizardry#git#CommitCmd(bundlePath, commitPath, messagePath, messageType)
-        return 'true' " We do not commit anything in clone mode
-    endfunction
+  " Return the commit command as a string {{{2
+  function vizardry#git#CommitCmd(bundlePath, commitPath, messagePath, messageType)
+    return 'true' " We do not commit anything in clone mode
+  endfunction
 
-    " Return the mv command as a string
-    function! vizardry#git#MvCmd(src, dest)
-        return 'mv '.a:src.' '.a:dest
-    endfunction
+  " Return the mv command as a string
+  function! vizardry#git#MvCmd(src, dest)
+    return 'mv '.a:src.' '.a:dest
+  endfunction
 
-    " Return the rm command as a string
-    function! vizardry#git#RmCmd(path)
-        return 'rm -rf '.a:path.' > /dev/null'
-    endfunction
+  " Return the rm command as a string
+  function! vizardry#git#RmCmd(path)
+    return 'rm -rf '.a:path.' > /dev/null'
+  endfunction
 
 else
-    " Return the path to a bundle {{{2
-    " The first element of the list is the base path (from which we execute
-    " commands)
-    " The second is the path to the bundle
-    function! vizardry#git#PathToBundleAsList(bundle)
-        return [g:VizardryGitBaseDir,g:vizardry#relativeBundleDir.'/'.a:bundle]
-    endfunction
+  " Return the path to a bundle {{{2
+  " The first element of the list is the base path (from which we execute
+  " commands)
+  " The second is the path to the bundle
+  function! vizardry#git#PathToBundleAsList(bundle)
+    return [g:VizardryGitBaseDir,g:vizardry#relativeBundleDir.'/'.a:bundle]
+  endfunction
 
-    " Return the commit command as a string {{{2
-    function vizardry#git#CommitCmd(bundlePath, commitPath, messagePath, messageType)
-        return 'cd '.a:bundlePath.' && git commit -m "'.
-                    \g:VizardryCommitMsgs[a:messageType].' '.a:messagePath.
-                    \'" '.a:commitPath
-    endfunction
+  " Return the commit command as a string {{{2
+  function vizardry#git#CommitCmd(bundlePath, commitPath, messagePath, messageType)
+    return 'cd '.a:bundlePath.' && git commit -m "'.
+          \g:VizardryCommitMsgs[a:messageType].' '.a:messagePath.
+          \'" '.a:commitPath
+  endfunction
 
-    " Return the mv command as a string
-    function! vizardry#git#MvCmd(src, dest)
-        return 'git mv '.a:src.' '.a:dest
-    endfunction
+  " Return the mv command as a string
+  function! vizardry#git#MvCmd(src, dest)
+    return 'git mv '.a:src.' '.a:dest
+  endfunction
 
-    " Return the rm command as a string
-    function! vizardry#git#RmCmd(path)
-        return 'git submodule deinit -f '.a:path.' && git rm -rf '.a:path.
-                    \ ' && rm -rf .git/modules/'.a:path
-    endfunction
+  " Return the rm command as a string
+  function! vizardry#git#RmCmd(path)
+    return 'git submodule deinit -f '.a:path.' && git rm -rf '.a:path.
+          \ ' && rm -rf .git/modules/'.a:path
+  endfunction
 endif
 
-
+" vim:set et sw=2:
