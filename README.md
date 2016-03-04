@@ -13,7 +13,7 @@
 
 ## Table of contents
 
-0. [Announce](#Announce)
+0. [Announce](#announce)
 1. [Release notes](#release-notes)
 2. [Introduction](#introduction)
     1. [Why This Fork ?](#why-this-fork)
