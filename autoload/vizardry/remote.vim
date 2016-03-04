@@ -44,7 +44,7 @@ if !exists("g:VizardryReadmeHelpFallback")
   let g:VizardryReadmeHelpFallback=1
 endif
 
-" Git api search options see
+" Search options using github API
 " https://developer.github.com/v3/search/#search-repositories
 if !exists("g:VizardrySearchOptions")
   let g:VizardrySearchOptions='fork:true'
@@ -59,22 +59,13 @@ let g:vizardry#remote#EvolveVimOrgPath = g:vizardry#scriptDir.'/plugin/EvolveVim
 
 " Clone a Repo {{{2
 function! vizardry#remote#grabRepo(site, name)
-  call vizardry#echo("grab repo ".a:site. " name ".a:name,'s')
-  if exists("g:VizardryGitBaseDir")
-    let l:commit=' && git commit -m "'.g:VizardryCommitMsgs['Invoke'].' '.
-          \ a:name.'" '.g:vizardry#relativeBundleDir.'/'.a:name.' .gitmodules'
-    let l:precmd=':!cd '.g:VizardryGitBaseDir.' && '
-    let l:path=g:vizardry#relativeBundleDir
-  else
-    let l:commit=''
-    let l:precmd=':!'
-    let l:path=g:vizardry#bundleDir
-  endif
-  let l:bundle=l:path."/".a:name
-  execute l:precmd." git ".g:VizardryGitMethod." 'https://github.com/".
-        \ a:site."' ".l:bundle.' && cd '.l:bundle.
-        \ ' && git submodule init && git submodule update && cd '.
-        \   g:VizardryGitBaseDir.l:commit
+  let l:path=vizardry#git#PathToBundleAsList(a:name)
+  let l:commitPath=l:path[1]
+  let l:cmd=':!cd '.l:path[0].' && '
+  let l:url=g:VizardryCloneUrl(a:site)
+  let l:cmd.=vizardry#git#CloneCmd(l:url,l:path[1]).' && '.
+        \vizardry#git#CommitCmd(l:path[0],l:commitPath,l:path[1],'Invoke')
+  execute l:cmd
 endfunction
 
 " Test existing repo {{{2
@@ -82,10 +73,9 @@ function! vizardry#remote#testRepo(repository)
   redraw
   let bundleList = split(system('ls -d '.g:vizardry#bundleDir.
         \ '/* 2>/dev/null | sed -n "s,.*bundle/\(.*\),\1,p"'),'\n')
+  let origin=g:VizardryCloneUrl(a:repository)
   for bundle in bundleList
-    if system('cd '.g:vizardry#bundleDir.'/'.bundle.
-          \ ' && git config --get remote.origin.url') ==
-          \ 'https://github.com/'.a:repository."\n"
+    if origin == vizardry#git#GetOrigin(g:vizardry#bundleDir.'/'.bundle)
       return bundle
     endif
   endfor
@@ -97,49 +87,39 @@ function! vizardry#remote#readurl(reader,url)
   execute ":!curl -silent '".a:url."'".' | sed "1,/^$/ d" | '.a:reader
 endfunction
 
-" Get the current branch of a repo
-function! vizardry#remote#currentBranch(path)
-  if a:path == ""
-    return "master"
-  endif
-  return system("cd ".a:path."; git branch | grep '^*' | sed 's/^* //' | tr -d  '\n'")
-endfunction
-
-" Display Help for site {{{2
-function! vizardry#remote#DisplayHelp(site,noRec,path)
-  call vizardry#echo("Looking for help file url",'s')
-  let name=substitute(a:site,'.*/\([^\.]*\).*','\1','')
-  let url='https://raw.githubusercontent.com/'.a:site.
-        \'/'.vizardry#remote#currentBranch(a:path).'/doc/'.name.'.txt'
-  let fourofour=system("curl -silent -I '".readmeurl."' | grep 404")
-  if fourofour != ""
-    call vizardry#echo("No help file found", "e")
-    if a:fallback == 1
-      call vizardry#remote#DisplayReadme(a:site,0,a:path)
-    endif
-  endif
-  call vizardry#remote#readurl(g:VizardryHelpReader,url)
-endfunction
-
-" Display Readme {{{2
-function! vizardry#remote#DisplayReadme(site,fallback,path)
-  call vizardry#echo("Looking for README url",'s')
-  let readmeurl=system("curl -silent 'https://api.github.com/repos/".
-        \ a:site."/readme' | grep download_url")
-  let readmeurl=substitute(readmeurl,
-        \ '\s*"download_url"[^"]*"\(.*\)",.*','\1','')
-  call vizardry#echo("Retrieving README",'s')
-  if readmeurl == ""
-    call vizardry#echo("No readme found",'w')
-    if a:fallback == 1
-      call vizardry#remote#DisplayHelp(a:site,0,a:path)
-    endif
+" Display help or Readme
+" type MUST be 'Readme' or 'Help'
+function! vizardry#remote#DisplayDoc(site,noRec,path,type)
+  " Prepare functions
+  if a:type=='Readme'
+    let l:Fun=g:VizardryReadmeUrl
+    let l:reader=g:VizardryReadmeReader
+    let l:otype='Help'
   else
-    call vizardry#remote#readurl(g:VizardryReadmeReader, readmeurl)
+    let l:Fun=g:VizardryHelpUrl
+    let l:reader=g:VizardryHelpReader
+    let l:otype='Readme'
   endif
+  " Retrieve url
+  call vizardry#echo('Looking for '.a:type.' url','s')
+  let l:url=l:Fun(a:site)
+  call vizardry#echo('Retrieving '.a:type,'s')
+  " test url
+  if l:url== ""
+    let fourofour="404"
+  else
+    let fourofour=system("curl -silent -I '".l:url."' | grep 404")
+  endif
+  " Fallback
+  if fourofour != ""
+    call vizardry#echo('No '.a:type.' found', "e")
+    if a:fallback == 1
+      call vizardry#remote#DisplayDoc(a:site,0,a:path,l:otype)
+    endif
+  endif
+  call vizardry#remote#readurl(l:reader,url)
+
 endfunction
-
-
 
 " Invoke helper {{{2
 function! vizardry#remote#handleInvokation(site, description, inputNice, index)
@@ -188,9 +168,11 @@ function! vizardry#remote#handleInvokation(site, description, inputNice, index)
       let ret=a:index+1
       let valid = 1
     elseif response ==? 'd'
-      call vizardry#remote#DisplayReadme(a:site,g:VizardryReadmeHelpFallback,"")
+      call vizardry#remote#DisplayDoc(a:site,g:VizardryReadmeHelpFallback,"",
+            \'Readme')
     elseif response ==? 'h'
-      call vizardry#remote#DisplayHelp(a:site,g:VizardryReadmeHelpFallback,"")
+      call vizardry#remote#DisplayDoc(a:site,g:VizardryReadmeHelpFallback,"",
+            \'Help')
     elseif response ==? 'a'
       let valid=1
     elseif response ==? 'p'
@@ -202,25 +184,11 @@ function! vizardry#remote#handleInvokation(site, description, inputNice, index)
   return ret
 endfunction
 
-" Query github {{{2
+" Query provider {{{2
 function! vizardry#remote#InitLists(input)
-  " Sanitize input / prepare query
-    let user=substitute(a:input, '.*-u\s\s*\(\S*\).*','\1','')
-    let l:input=substitute(substitute(a:input, '-u\s\s*\S*','',''),
-          \'^\s\s*','','')
-    let g:vizardry#lastScry = substitute(l:input, '\s\s*', '', 'g')
-    let lastScryPlus = substitute(l:input, '\s\s*', '+', 'g')
-    let query=lastScryPlus
-    if match(a:input, '-u') != -1
-      let query=substitute(query,'+$','','') "Remove useless '+' if no keyword
-      let query.='+user:'.user
-    endif
-    call vizardry#echo("Searching for ".query."...",'s')
-    let query.='+vim+'.g:VizardrySearchOptions
-    call vizardry#echo("(actual query: '".query."')",'')
+    let query=g:VizardryGenerateQuery(a:input)
     " Do query
-    let curlResults = system(
-          \"curl -silent 'https://api.github.com/search/repositories?q=".query."'")
+    let curlResults = system("curl -silent '".query."'")
     " Prepare list (sites and descriptions)
     let curlResults = substitute(curlResults, 'null,','"",','g')
     call  vizardry#echo(curlResults,'D' )
@@ -325,27 +293,19 @@ endfunction
 
 " Upgrade a specific plugin (git repo)
 function s:GitEvolve(path, branch)
-  let curbranch=vizardry#remote#currentBranch(a:path)
+  let curbranch=system(vizardry#git#GetCurrentBranch(a:path))
   let commitreq=0
   " Specific branch required ?
   if a:branch != ""
     if curbranch != a:branch
-      if empty(system('cd '.a:path.' && git branch | grep '.a:branch))
-        " Create a branch
-        let checkoutArg=' -b '
-      else
-        " Existing branch
-        let checkoutArg=' '
-      endif
-      call system("cd ".a:path."; git checkout".checkoutArg.a:branch)
+      call vizardry#git#CheckoutBranch(a:path,a;branch)
       " Force commiting
       let commitreq=1
     endif
     let curbranch=a:branch
   endif
   " Do upgrade
-  let l:submodule=' && git submodule init && git submodule update'
-  let l:ret=system('cd '.a:path.' && git pull origin '.curbranch.l:submodule)
+  let l:ret=vizardry#git#Upgrade(curbranch)
   call vizardry#echo(l:ret,'')
   " Do we need a commit ?
   if commitreq==0 && l:ret=~'Already up-to-date'
@@ -359,17 +319,16 @@ function s:GitEvolve(path, branch)
     let response=vizardry#doPrompt(name.' Evolved, show Readme, Log or Continue ? (r,l,c,h)',
           \['r','l','c', 'h'])
       if response ==? 'r' || response ==? 'h'
-        let l:site=system('cd '.a:path.' && git remote -v')
-        let l:site=substitute(site,'origin\s*\(\S*\).*','\1','')
-        let l:site=substitute(site,'.*github\.com.\(.*\)','\1','')
-        let l:site=substitute(site,'\(.*\).git','\1','')
+                let l:site=g:VizardrySiteFromOrigin(vizardry#git#GetOrigin(a:path))
         if response ==? 'r'
-          call vizardry#remote#DisplayReadme(site,g:VizardryReadmeHelpFallback,a:path)
+          let l:doctype='Readme'
         else
-          call vizardry#remote#DisplayHelp(site,g:VizardryReadmeHelpFallback,a:path)
+          let l:doctype='Help'
         endif
+        call vizardry#remote#DisplayDoc(site,g:VizardryReadmeHelpFallback,
+                \a:path,l:doctype)
       elseif response ==? 'l'
-        execute ':!cd '.a:path .' && git log'
+        call vizardry#git#Log(a:path)
       elseif response ==? 'c'
         let continue=1
       endif

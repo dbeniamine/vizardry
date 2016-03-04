@@ -135,6 +135,11 @@ function! vizardry#formValidBundle(bundle)
   return a:bundle.counter
 endfunction
 
+" Providers {{{1
+function! vizardry#ListGrimoires()
+  return s:VizardryAvailableGrimoires
+endfunction
+
 " List Invoked / Banished plugins {{{2
 function! vizardry#ListAllInvoked(A,L,P)
   return vizardry#ListInvoked('*')
@@ -169,9 +174,7 @@ function! vizardry#DisplayInvoked()
       endif
     endfor
     for invoked in invokedList
-      let origin = system('(cd '.g:vizardry#bundleDir.'/'.invoked.
-            \ '&& git config --get remote.origin.url) 2>/dev/null')
-      let origin = strpart(origin, 0, strlen(origin)-1)
+      let origin = vizardry#git#GetOrigin(g:vizardry#bundleDir.'/'.invoked)
       if origin==''
         call vizardry#echo(invoked,'')
       else
@@ -195,9 +198,7 @@ function! vizardry#DisplayBanished()
       endif
     endfor
     for banished in banishedList
-      let origin = system('(cd '.g:vizardry#bundleDir.'/'.banished.
-            \ '~ && git config --get remote.origin.url) 2>/dev/null')
-      let origin = strpart(origin, 0, strlen(origin)-1)
+      let origin = vizardry#git#GetOrigin(g:vizardry#bundleDir.'/'.banished.'~')
       if origin==''
         call vizardry#echo(banished,'')
       else

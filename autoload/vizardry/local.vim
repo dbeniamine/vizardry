@@ -48,16 +48,12 @@ function! vizardry#local#UnbanishCommand(bundle)
 endfunction
 
 function! vizardry#local#Unbanish(bundle, reload)
-  if exists("g:VizardryGitBaseDir")
-    let l:path=g:vizardry#relativeBundleDir.'/'.a:bundle
-    let l:commit=' && git commit -m "'.g:VizardryCommitMsgs['Invoke'].' '.
-          \ a:bundle.'" '.l:path.' '.l:path.'~ .gitmodules'
-    let l:cmd='cd '.g:VizardryGitBaseDir.' && git mv '.l:path.'~ '.l:path.
-          \ l:commit.' && git submodule update '.l:path
-  else
-    let l:path=g:vizardry#bundleDir.'/'.a:bundle
-    let l:cmd='mv '.l:path.'~ '.l:path
-  endif
+  " Retrieve paths
+  let l:path=vizardry#git#PathToBundleAsList(a:bundle)
+  " Prepare command
+  let cmd='cd '.l:path[0].' && '.vizardry#git#MvCmd(l:path[1].'~',l:path[1])
+        \.' && '.vizardry#git#CommitCmd(l:path[0],
+        \l:path[1].' '.l:path[1].'~ ',l:path[1],'Invoke')
   call system(l:cmd)
   let ret=v:shell_error
   call vizardry#local#UnbanishMagic(a:bundle)
@@ -85,29 +81,23 @@ function! vizardry#local#Banish(input, type)
   else
     let matchList = split(matches,'\n')
     for aMatch in matchList
-      if exists("g:VizardryGitBaseDir")
-        let l:commit=' && git commit -m "'.g:VizardryCommitMsgs[a:type].' '.
-              \ aMatch.'" '.g:vizardry#relativeBundleDir.'/'.aMatch.' .gitmodules'
-        if a:type== 'Banish'
-          let l:commit.=' '.g:vizardry#relativeBundleDir.'/'.aMatch.'~'
-          let l:cmd='cd '.g:VizardryGitBaseDir.' && git mv '.
-                \ g:vizardry#relativeBundleDir.'/'.aMatch.' '.
-                \g:vizardry#relativeBundleDir.'/'.aMatch.'~'.l:commit
-        else
-          let l:cmd='cd '.g:VizardryGitBaseDir.' && git submodule deinit -f '.
-                \ g:vizardry#relativeBundleDir.'/'.aMatch.' && git rm -rf '.
-                \ g:vizardry#relativeBundleDir.'/'.aMatch.
-                \ ' && rm -rf .git/modules/'.g:vizardry#relativeBundleDir.'/'.
-                \ aMatch.l:commit
-        endif
+      " Retrieve path and initialize command
+      let l:path=vizardry#git#PathToBundleAsList(aMatch)
+      let cmd='cd '.l:path[0].' && '
+      let l:commitpath=l:path[1]
+
+      " Add action (mv / rm) to cmd
+      if a:type == 'Banish'
+        let l:cmd.=vizardry#git#MvCmd(l:path[1],l:path[1].'~')
+        let l:commitpath.=' '.l:path[1].'~'
       else
-        if a:type== 'Banish'
-          let l:cmd='mv '.g:vizardry#bundleDir.'/'.aMatch.' '.
-                \g:vizardry#bundleDir.'/'.aMatch.'~ >/dev/null'
-        else
-          let l:cmd='rm -rf '.g:vizardry#bundleDir.'/'.aMatch.' >/dev/null'
-        endif
+        let l:cmd.=vizardry#git#RmCmd(l:path[1])
       endif
+
+      " Add commit to cmd
+      let l:cmd.=' && '.vizardry#git#CommitCmd(l:path[0],l:commitpath,
+            \l:path[1],a:type)
+
       let error=system(l:cmd)
       call vizardry#local#BanishMagic(aMatch)
       if v:shell_error!=0
