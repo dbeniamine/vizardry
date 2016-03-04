@@ -51,7 +51,7 @@ endif
 
 " Commands definitions {{{1
 command! -nargs=0 Vizardry call vizardry#usage()
-command! -nargs=1 -complete=custom,vizardry#grimoire#ListGrimoires Grimoire
+command! -nargs=? -complete=custom,vizardry#grimoire#ListGrimoires Grimoire
       \ call vizardry#grimoire#SetGrimoire(<q-args>)
 command! -nargs=? Invoke call vizardry#remote#Invoke(<q-args>)
 command! -nargs=? -complete=custom,vizardry#ListAllInvoked Banish

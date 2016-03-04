@@ -37,13 +37,17 @@ Table of Contents                                         *Vizardry-contents* ~
         4   5.6.1 View readme on evolve............|Vizardry-viewReadmeOnEvolve|
         4   5.6.2 Evolve from vim.org..............|Vizardry-evolveVim.org|
         4.7 Scry...................................|:Vizardry|
+        4.8 Grimoire...............................|:Grimoire|
     5. Spread the word ............................|Vizardry-spread|
 
 ===============================================================================
 Release notes                                         *Vizardry-releaseNotes* ~
 
-Current Version: 1.4
+Current Version: 2.0b1
 
+* v2.0b1 comes with the possibility to search plugins from (virtually) any
+  providers (github, bitbuckets,gitlab), see |:Grimoire|. It also provide a
+  major refactor and several minor bug fix.
 * v1.4 provides several bug fix and the capability of seeing help files from
  Invoke and Evolve prompt. It also add the command `:Vizardry` to show version
  and basic usage.
@@ -319,6 +323,22 @@ Vizardry Commands                                         *Vizardry-commands* ~
 :Vizardry
 
     Show a basic usage and Vizardry version.
+
+
+                                                                    *:Grimoire*
+:Grimoire <provider>
+
+Select the `Grimoire` from which you want to `Scry` and `Invoke` bundles. A
+grimoire is a website from which you can search for bundles such as github or
+bitbucked.
+
+It is also possible to set the default grimoire in your vimrc
+
+    let g:VizardryDefaultGrimoire='github'
+
+Help wanted:~
+Currently only github is available, but it is very easy to add a new Grimoire,
+see https://github.com/dbeniamine/vizardry/issues/3.
 
 
 ===============================================================================

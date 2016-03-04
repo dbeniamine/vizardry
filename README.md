@@ -34,12 +34,16 @@
         1. [Display readme on evolve](#display-readme-on-evolve)
         2. [Evolve from vim.org](#evolve-from-vim.org)
     7. [Vizardry](#vizardry-cmd)
+    8. [Grimoire](#Grimoire)
 5. [Spread the work](#spread-the-word)
 
 ## Release notes
 
-Current Version: 1.4
+Current Version: 2.0b1
 
+* v2.0b1 comes with the possibility to search plugins from (virtually) any providers
+    (github, bitbuckets,gitlab), see [Grimoire](#Grimoire). It also provide a
+    major refactor and several minor bug fix.
 * v1.4 provides several bug fix and the capability of seeing help files from
  Invoke and Evolve prompt.
 * v1.3 allow to Invoke directly from Scry, to do so, I had to modify the input
@@ -55,6 +59,10 @@ Remember back in the dark ages of 2013? When you had to search for vim plugins l
 In 2014, you can just type ":Invoke &lt;keyword&gt;" and Vizardry will automatically search github for the plugin you want and install it for you.
 
 In 2015 you can even upgrade plugins from any git repo or vim.org using [:Evolve](#evolve).
+
+As each years seems to come with a new imrpovement, in 2016 you are not
+limited to github anymore it is possible to install plugins from bitbucket or
+virtually any others, see [Grimoire](#Grimoire)
 
 
 ### Why this fork ?
@@ -313,9 +321,24 @@ you need to create a `.metainfos` file at the root of the plugin directory
 
 ### <a name="vizardry-cmd">Vizardry</a>
 
-`:Vizardry`
+    :Vizardry
 
 Show a basic usage and Vizardry version.
+
+### Grimoire
+
+    :Grimoire <provider>
+
+Select the `Grimoire` from which you want to `Scry` and `Invoke` bundles. A
+grimoire is a website from which you can search for bundles such as github or
+bitbucked.
+
+It is also possible to set the default grimoire in your vimrc
+
+    let g:VizardryDefaultGrimoire='github'
+
+**Help wanted:** currently only github is available, but it is very easy to
+add a new Grimoire, see [issue#3](https://github.com/dbeniamine/vizardry/issues/3).
 
 # Spread the word
 

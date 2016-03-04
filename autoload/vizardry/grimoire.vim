@@ -51,8 +51,8 @@ function! vizardry#grimoire#SetGrimoire(grimoire)
   let l:grimoire=a:grimoire
   while(match(s:VizardryAvailableGrimoires, '\<'.l:grimoire.'\>') < 0)
     call vizardry#echo("Unknown grimoire '".a:grimoire."'",'e')
-    let l:grimoire=vizardry#doPrompt("Please select a grimoire",
-          \s:VizardryAvailableGrimoires)
+    let l:grimoire=vizardry#doPrompt('Please select a grimoire from: ['.
+          \join(s:VizardryAvailableGrimoires, ', ').']',s:VizardryAvailableGrimoires)
   endwhile
   let g:VizardryCloneUrl=function('vizardry#'.l:grimoire.'#CloneUrl')
   let g:VizardryReadmeUrl=function('vizardry#'.l:grimoire.'#ReadmeUrl')
