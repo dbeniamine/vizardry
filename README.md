@@ -34,7 +34,7 @@
         1. [Display readme on evolve](#display-readme-on-evolve)
         2. [Evolve from vim.org](#evolve-from-vim.org)
     7. [Vizardry](#vizardry-cmd)
-    8. [Grimoire](#Grimoire)
+    8. [Grimoire](#grimoire)
 5. [Spread the work](#spread-the-word)
 
 ## Release notes
@@ -42,7 +42,7 @@
 Current Version: 2.0b1
 
 * v2.0b1 comes with the possibility to search plugins from (virtually) any providers
-    (github, bitbuckets,gitlab), see [Grimoire](#Grimoire). It also provide a
+    (github, bitbuckets,gitlab), see [Grimoire](#grimoire). It also provide a
     major refactor and several minor bug fix.
 * v1.4 provides several bug fix and the capability of seeing help files from
  Invoke and Evolve prompt.
@@ -62,7 +62,7 @@ In 2015 you can even upgrade plugins from any git repo or vim.org using [:Evolve
 
 As each years seems to come with a new imrpovement, in 2016 you are not
 limited to github anymore it is possible to install plugins from bitbucket or
-virtually any others, see [Grimoire](#Grimoire)
+virtually any others, see [Grimoire](#grimoire)
 
 
 ### Why this fork ?
