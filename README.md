@@ -13,6 +13,7 @@
 
 ## Table of contents
 
+0. [Announce](#Announce)
 1. [Release notes](#release-notes)
 2. [Introduction](#introduction)
     1. [Why This Fork ?](#why-this-fork)
@@ -35,6 +36,13 @@
         2. [Evolve from vim.org](#evolve-from-vim.org)
     7. [Vizardry](#vizardry-cmd)
 5. [Spread the work](#spread-the-word)
+
+## Announce
+
+**Help wanted:** I need help in writing small piece of code to make vizardry
+2.0 able to install bundles from any provider (github, bitbucket, gitlabs,
+...) see [issue#3](https://github.com/dbeniamine/vizardry/issues/3).
+
 
 ## Release notes
 

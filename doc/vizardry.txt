@@ -13,6 +13,7 @@
 ===============================================================================
 Table of Contents                                         *Vizardry-contents* ~
 
+    0. Announce....................................|Vizardry-announce|
     1. Release notes...............................|Vizardry-releaseNotes|
     2. Introduction................................|Vizardry-introduction|
         2.1 Why This Fork..........................|Vizardry-fork|
@@ -38,6 +39,15 @@ Table of Contents                                         *Vizardry-contents* ~
         4   5.6.2 Evolve from vim.org..............|Vizardry-evolveVim.org|
         4.7 Scry...................................|:Vizardry|
     5. Spread the word ............................|Vizardry-spread|
+===============================================================================
+Announce                                                  *Vizardry-announce* ~
+
+Help wanted:~
+
+I need help in writing small piece of code to make vizardry
+2.0 able to install bundles from any provider (github, bitbucket, gitlabs,
+...) see https://github.com/dbeniamine/vizardry/issues/3.
+
 
 ===============================================================================
 Release notes                                         *Vizardry-releaseNotes* ~
