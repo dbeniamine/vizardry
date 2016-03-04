@@ -35,7 +35,7 @@ endfunction
 " Get the origin repository addresses
 function! vizardry#git#GetOrigin(path)
   let l:ret=system('(cd '.a:path.
-        \'&& git config --get remote.origin.url) 2>/dev/null')
+        \' && git config --get remote.origin.url) 2>/dev/null')
   return vizardry#git#RemoveEndline(l:ret)
 endfunction
 
@@ -109,8 +109,8 @@ if(g:VizardryGitMethod == "clone")
   endfunction
 
   " Return the clone command as a string
-  function! vizardry#git#CloneCmd(site,name,path)
-    return 'git clone '.a:site.'/'a:name.' '.a:path.' && '.
+  function! vizardry#git#CloneCmd(repo,path)
+    return 'git clone '.a:repo.' '.a:path.' && '.
           \vizardry#git#InitSubmoduleCmd(a:path)
   endfunction
 else
