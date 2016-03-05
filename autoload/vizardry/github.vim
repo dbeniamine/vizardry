@@ -25,35 +25,39 @@ let g:save_cpo = &cpo
 set cpo&vim
 
 " This file provide the github provider API
+let s:baseURL='https://github.com/'
+let s:APIUrl="https://api.github.com/"
+let s:rawUrl="https://raw.githubusercontent.com/"
+let s:SearchUrl=s:APIUrl.'search/repositories?q='
 
 " Return the clone url for site/name
 function! vizardry#github#CloneUrl(repo)
-  return 'https://github.com/'.a:repo
+  return s:baseURL.a:repo
 endfunction
 
 " Return the Readme.md url for site/name
 function! vizardry#github#ReadmeUrl(repo)
-  let readmeurl=system("curl -silent 'https://api.github.com/repos/".
+  let readmeurl=system("curl -silent '".s:APIUrl."repos/".
         \a:repo."/readme' | grep download_url")
   return substitute(readmeurl,'\s*"download_url"[^"]*"\(.*\)",.*','\1','')
 endfunction
 
 " Return the Help url for repo (doc/name.txt)
 function! vizardry#github#HelpUrl(repo)
-  return vizardry#grimoire#HelpUrl('https://raw.githubusercontent.com/'.a:repo,
+  return vizardry#grimoire#HelpUrl(s:rawUrl.a:repo,
         \vizardry#local#GetRepoName(a:repo))
 endfunction
 
 " Return the repo name from the origin url
 function vizardry#github#SiteFromOrigin(path)
-  return vizardry#grimoire#SiteFromOrigin(a:path,'github.com')
+  return vizardry#grimoire#SiteFromOrigin(a:path,
+        \substitute(s:baseURL,'.*/\([^/]*\)/$','\1',''))
 endfunction
 
 " Format query for the provider and return the url including query, as:
 " https://api.github.com/search/repositories?q=user:dbeniamine+vim+fork:true+sort:stars
-"TODO input should already be at github's api format
 function! vizardry#github#GenerateQuery(input)
-  return 'https://api.github.com/search/repositories?q='.a:input
+  return s:SearchUrl.a:input
 endfunction
 
 let cpo=save_cpo
