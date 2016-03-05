@@ -33,15 +33,14 @@ set cpo&vim
 "           + return the url to the readme (markdown not HTML)
 "       + vizardry#mygrimoires#HelpUrl(site,name)
 "           + return the url to the help (vim help something like '/doc/name.txt')
-"       + vizardry#mygrimoires#GenerateQuery(query)
-"           + Format query from vizardry format to the grimoire api
-"           + return the full query
-"       + vizardry#mygrimoire#ParseQueryResults(results)
-"           + Parse the results from query
+"       + vizardry#mygrimoires#HandleQuery(query)
+"           + Handle query at github API format (https://api.github.com/search/repositories?q=user:dbeniamine+vim+fork:true+sort:stars)
 "           + return a list a repo
 "               a repo is a dictionnary with two values:
 "                   + site: the site eg: dbeniamine/vizardry
 "                   + description: the repo description
+"           + This function MUST use vizardry#remote#GetURL(url) instead of
+"            system('curl '.url)
 "      You can use the provided generic helper defined in the end of this
 "      file. For more info see: autoload/vizardry/github.vim
 "  + Add the grimoire name to the list below
@@ -62,8 +61,7 @@ function! vizardry#grimoire#SetGrimoire(grimoire)
   let g:VizardryReadmeUrl=function('vizardry#'.l:grimoire.'#ReadmeUrl')
   let g:VizardryHelpUrl=function('vizardry#'.l:grimoire.'#HelpUrl')
   let g:VizardrySiteFromOrigin=function('vizardry#'.l:grimoire.'#SiteFromOrigin')
-  let g:VizardryGenerateQuery=function('vizardry#'.l:grimoire.'#GenerateQuery')
-  let g:VizardryParseQueryResults=function('vizardry#'.l:grimoire.'#ParseQueryResults')
+  let g:VizardryHandleQuery=function('vizardry#'.l:grimoire.'#HandleQuery')
 endfunction
 
 " Vizardry grimoire generic helper {{{1

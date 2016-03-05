@@ -64,6 +64,10 @@ endif
 
 let g:vizardry#remote#EvolveVimOrgPath = g:vizardry#scriptDir.'/plugin/EvolveVimOrgPlugins.sh'
 " Functions {{{1
+" Call curl
+function! vizardry#remote#GetURL(url)
+  return system("curl -silent '".a:url."'")
+endfunction
 
 " Clone a Repo {{{2
 function! vizardry#remote#grabRepo(site, name)
@@ -195,8 +199,9 @@ function! vizardry#remote#handleInvokation(site, description, inputNice, index)
 endfunction
 
 " Query provider {{{2
-function! vizardry#remote#InitLists(input)
-  " Format query to github API
+
+" Format query to github API
+function! vizardry#remote#FormatQuery(input)
   let user=substitute(a:input, '.*-u\s\s*\(\S*\).*','\1','')
   let l:input=substitute(substitute(a:input, '-u\s\s*\S*','',''),
         \'^\s\s*','','')
@@ -209,12 +214,15 @@ function! vizardry#remote#InitLists(input)
   endif
   call vizardry#echo("Searching for ".query."...",'s')
   let query.='+vim+'.g:VizardrySearchOptions
+  return query
+endfunction
+
+" Retrieve repo lists
+function! vizardry#remote#InitLists(input)
+  let query=vizardry#remote#FormatQuery(a:input)
   call vizardry#echo("(actual query: '".query."')",'')
-  " Prepare query according to grimoire
-  let query=g:VizardryGenerateQuery(l:query)
   " Do query
-  let curlResults = system("curl -silent '".query."'")
-  let g:vizardry#siteList=g:VizardryParseQueryResults(curlResults)
+  let g:vizardry#siteList=g:VizardryHandleQuery(l:query)
   call  vizardry#echo(g:vizardry#siteList,'D' )
   let ret=len(g:vizardry#siteList)
   if ret == 0

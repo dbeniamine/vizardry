@@ -54,20 +54,16 @@ function vizardry#github#SiteFromOrigin(path)
         \substitute(s:baseURL,'.*/\([^/]*\)/$','\1',''))
 endfunction
 
-" Format query for the provider and return the url including query, as:
+" Handle query at github search API format
 " https://api.github.com/search/repositories?q=user:dbeniamine+vim+fork:true+sort:stars
-function! vizardry#github#GenerateQuery(input)
-  return s:SearchUrl.a:input
-endfunction
-
-" Get the results returned by curl
 " Return a list of repo
-" a repo is a dictionnary with two values:
-" site: the site name e.g: dbeniamine/vizardry
-" description: the description
-function! vizardry#github#ParseQueryResults(results)
+"   a repo is a dictionnary with two values:
+"       + site: the site name e.g: dbeniamine/vizardry
+"       + description: the description
+function! vizardry#github#HandleQuery(input)
+  let l:results=vizardry#remote#GetURL(s:SearchUrl.a:input)
   " Prepare list (sites and descriptions)
-  let l:results = substitute(a:results, 'null,','"",','g')
+  let l:results = substitute(l:results, 'null,','"",','g')
   let lines=split(l:results, '\n')
   let parsedList=[]
   for line in lines
