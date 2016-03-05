@@ -221,15 +221,13 @@ function! vizardry#ReloadScripts()
   source $MYVIMRC
   let files=[]
   for plugin in split(&runtimepath,',')
-    for file in split(system ("find ".plugin.
-          \ '/plugin -name "*.vim" 2>/dev/null'),'\n')
+    for file in glob(plugin.'/plugin/**/*.vim',0,1)
       try
         exec 'silent source '.file
       catch
       endtry
     endfor
-    for file in split(system ("find ".plugin.
-          \ '/after -name "*.vim" 2>/dev/null'),'\n')
+    for file in glob(plugin.'/after/**/*.vim',0,1)
       try
         exec 'silent source '.file
       catch
