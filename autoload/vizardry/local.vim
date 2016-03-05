@@ -33,9 +33,8 @@ endfunction
 " UnBannish {{{1
 function! vizardry#local#UnbanishCommand(bundle)
   let niceBundle = substitute(a:bundle, '\s\s*', '', 'g')
-  let matches = vizardry#ListBanished(a:bundle)
-  if matches!=''
-    let matchList = split(matches, "\n")
+  let matchList = vizardry#ListBanished(a:bundle)
+  if len(matchList) != 0
     let success=0
     for aMatch in matchList
       if vizardry#local#Unbanish(aMatch, 0) != 0
@@ -46,7 +45,7 @@ function! vizardry#local#UnbanishCommand(bundle)
     endfor
     call vizardry#ReloadScripts()
   else
-    if vizardry#ListInvoked(a:bundle)!=''
+    if len(vizardry#ListInvoked(a:bundle))!=0
       let msg='Bundle "'.niceBundle.'" is not banished.'
     else
       let msg='Bundle "'.niceBundle.'" does not exist.'
@@ -79,15 +78,14 @@ function! vizardry#local#Banish(input, type)
     return
   endif
   let inputNice = substitute(a:input, '\s\s*', '', 'g')
-  let matches = vizardry#ListInvoked(inputNice)
-  if matches == ''
-    if vizardry#ListBanished(inputNice) != ''
+  let matchList = vizardry#ListInvoked(inputNice)
+  if len(matchList) == 0
+    if len(vizardry#ListBanished(inputNice)) != 0
       call vizardry#echo('"'.inputNice.'" has already been banished','w')
     else
       call vizardry#echo('There is no plugin named "'.inputNice.'"','e')
     endif
   else
-    let matchList = split(matches,'\n')
     for aMatch in matchList
       " Retrieve path and initialize command
       let l:path=vizardry#git#PathToBundleAsList(aMatch)

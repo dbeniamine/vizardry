@@ -84,8 +84,7 @@ endfunction
 function! vizardry#remote#testRepo(repository)
   redraw
   let name=vizardry#local#GetRepoName(a:repository)
-  let bundleList = split(vizardry#ListInvoked(name),'\n') +
-        \split(vizardry#ListBanished(name),'\n')
+  let bundleList = vizardry#ListInvoked(name) + vizardry#ListBanished(name)
   let origin=vizardry#git#RemoveProto(g:VizardryCloneUrl(a:repository))
   for bundle in bundleList
     if origin == vizardry#git#RemoveProto(vizardry#git#GetOrigin(
@@ -312,7 +311,7 @@ endfunction
 
 " Upgrade a specific plugin (git repo)
 function s:GitEvolve(path, branch)
-  let curbranch=system(vizardry#git#GetCurrentBranch(a:path))
+  let curbranch=vizardry#git#GetCurrentBranch(a:path)
   let commitreq=0
   " Specific branch required ?
   if curbranch != a:branch
@@ -374,7 +373,7 @@ endfunction
 function! vizardry#remote#Evolve(input, rec)
   if a:input==""
     " Try evolve every plugins
-    let invokedList = split(vizardry#ListInvoked('*'),'\n')
+    let invokedList = vizardry#ListInvoked('*')
     let l:files=''
     for plug in invokedList
       let l:files.=' '.vizardry#remote#Evolve(plug,1)

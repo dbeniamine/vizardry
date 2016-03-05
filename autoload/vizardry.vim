@@ -120,7 +120,7 @@ endfunction
 " Test existing bundle
 function! vizardry#testBundle(bundle)
   if a:bundle!=""
-    return system('ls -d '.g:vizardry#bundleDir.'/'.a:bundle.' 2>/dev/null')!=''
+    return glob(g:vizardry#bundleDir.'/'.a:bundle.'/')!=''
   endif
 endfunction
 
@@ -144,27 +144,30 @@ endfunction
 
 " List Invoked / Banished plugins {{{2
 function! vizardry#ListAllInvoked(A,L,P)
-  return vizardry#ListInvoked('*')
+  return join(vizardry#ListInvoked('*'),"\n")
 endfunction
 
 function! vizardry#ListAllBanished(A,L,P)
-  return vizardry#ListBanished('*')
+  return join(vizardry#ListBanished('*'),"\n")
 endfunction
 
 function! vizardry#ListInvoked(match)
-  let invokedList = system('ls -d '.g:vizardry#bundleDir.'/'.a:match.
-        \ ' 2>/dev/null | grep -v "~$" | sed -n "s,.*/\(.*\),\1,p"')
-  return invokedList
+  if a:match =~'\(*\)$'
+    let l:match=a:match.'[^~]'
+  else
+    let l:match=a:match
+  endif
+  return split(substitute(glob(g:vizardry#bundleDir.'/'.l:match),
+        \'[^\n]*/\([^\n]*\(\n\|$\)\)','\1','g'),'\n')
 endfunction
 
 function! vizardry#ListBanished(match)
-  let banishedList = system('ls -d '.g:vizardry#bundleDir.'/'.a:match.
-        \ '~ 2>/dev/null | sed -n "s,.*/\(.*\)~,\1,p"')
-  return banishedList
+  return split(substitute(glob(g:vizardry#bundleDir.'/'.a:match.'~'),
+        \'[^\n]*/\([^\~]*\)\~\(\n\|$\)','\1\2','g'),'\n')
 endfunction
 
 function! vizardry#DisplayInvoked()
-  let invokedList = split(vizardry#ListInvoked('*'),'\n')
+  let invokedList = vizardry#ListInvoked('*')
   if len(invokedList) == ''
     call vizardry#echo("No plugins invoked",'w')
   else
@@ -188,7 +191,7 @@ function! vizardry#DisplayInvoked()
 endfunction
 
 function! vizardry#DisplayBanished()
-  let banishedList = split(vizardry#ListBanished('*'),'\n')
+  let banishedList = vizardry#ListBanished('*')
   if len(banishedList) == ''
     call vizardry#echo("No plugins banished",'w')
   else
