@@ -103,7 +103,7 @@ endfunction
 
 " Display help or Readme
 " type MUST be 'Readme' or 'Help'
-function! vizardry#remote#DisplayDoc(site,noRec,path,type)
+function! vizardry#remote#DisplayDoc(site,fallback,path,type)
   " Prepare functions
   if a:type=='Readme'
     let l:Fun=g:VizardryReadmeUrl
@@ -122,7 +122,7 @@ function! vizardry#remote#DisplayDoc(site,noRec,path,type)
   if l:url== ""
     let fourofour="404"
   else
-    let fourofour=system("curl -silent -I '".l:url."' | grep 404")
+    let fourofour=matchstr(split(vizardry#remote#GetURL(l:url),'\n')[0],'404')
   endif
   " Fallback
   if fourofour != ""
@@ -130,9 +130,9 @@ function! vizardry#remote#DisplayDoc(site,noRec,path,type)
     if a:fallback == 1
       call vizardry#remote#DisplayDoc(a:site,0,a:path,l:otype)
     endif
+  else
+    call vizardry#remote#readurl(l:reader,url)
   endif
-  call vizardry#remote#readurl(l:reader,url)
-
 endfunction
 
 " Invoke helper {{{2
