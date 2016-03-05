@@ -79,11 +79,13 @@ endfunction
 " Test existing repo {{{2
 function! vizardry#remote#testRepo(repository)
   redraw
-  let bundleList = split(system('ls -d '.g:vizardry#bundleDir.
-        \ '/* 2>/dev/null | sed -n "s,.*bundle/\(.*\),\1,p"'),'\n')
-  let origin=g:VizardryCloneUrl(a:repository)
+  let name=vizardry#local#GetRepoName(a:repository)
+  let bundleList = split(vizardry#ListInvoked(name),'\n') +
+        \split(vizardry#ListBanished(name),'\n')
+  let origin=vizardry#git#RemoveProto(g:VizardryCloneUrl(a:repository))
   for bundle in bundleList
-    if origin == vizardry#git#GetOrigin(g:vizardry#bundleDir.'/'.bundle)
+    if origin == vizardry#git#RemoveProto(vizardry#git#GetOrigin(
+          \g:vizardry#bundleDir.'/'.bundle))
       return bundle
     endif
   endfor

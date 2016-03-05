@@ -41,6 +41,12 @@ function! vizardry#git#GetOrigin(path)
   return vizardry#git#RemoveEndline(l:ret)
 endfunction
 
+" Get the origin repository addresses without the protocol prefix
+function! vizardry#git#RemoveProto(origin)
+  return substitute(substitute(substitute(a:origin,'^.*@\(.*\):','\1/',''),
+        \'^.*://','',''),'\.git$','','')
+endfunction
+
 " Return the init submodule cmd as a string
 function! vizardry#git#InitSubmoduleCmd(path)
   return 'cd '.a:path.' && git submodule init && git submodule update'
