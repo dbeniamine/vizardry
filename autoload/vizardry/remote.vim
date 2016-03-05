@@ -214,22 +214,8 @@ function! vizardry#remote#InitLists(input)
   let query=g:VizardryGenerateQuery(l:query)
   " Do query
   let curlResults = system("curl -silent '".query."'")
-  " Prepare list (sites and descriptions)
-  let curlResults = substitute(curlResults, 'null,','"",','g')
-  call  vizardry#echo(curlResults,'D' )
-  let site = system('grep "full_name" | head -n '.g:VizardryNbScryResults,
-        \ curlResults)
-  let site = substitute(site, '\s*"full_name"[^"]*"\([^"]*\)"[^\n]*','\1','g')
-  let g:vizardry#siteList = split(site, '\n')
+  let g:vizardry#siteList=g:VizardryParseQueryResults(curlResults)
   call  vizardry#echo(g:vizardry#siteList,'D' )
-
-  let description = system('grep "description" | head -n '.
-        \ g:VizardryNbScryResults, curlResults)
-  let description = substitute(description,
-        \ '\s*"description"[^"]*"\([^"\\]*\(\\.[^"\\]*\)*\)"[^\n]*','\1','g')
-  let description = substitute(description, '\\"', '"', 'g')
-  let g:vizardry#descriptionList = split(description, '\n')
-  call  vizardry#echo(g:vizardry#descriptionList,'D' )
   let ret=len(g:vizardry#siteList)
   if ret == 0
     call vizardry#echo("No results found for query '".a:input."'",'w')
@@ -287,8 +273,8 @@ function! vizardry#remote#Invoke(input)
 
   " Installation prompt / navigation trough results
   while( l:index >= 0 && l:index < len(g:vizardry#siteList))
-    let site=g:vizardry#siteList[l:index]
-    let description=g:vizardry#descriptionList[l:index]
+    let site=g:vizardry#siteList[l:index].site
+    let description=g:vizardry#siteList[l:index].description
     let matchingBundle = vizardry#remote#testRepo(site)
     if matchingBundle != ""
       call vizardry#echo('Found '.site,'s')
@@ -458,8 +444,8 @@ function! vizardry#remote#Scry(input)
     endif
     redraw
     while index<length
-      call vizardry#echo(index.": ".g:vizardry#siteList[index],'')
-      call vizardry#echo('('.g:vizardry#descriptionList[index].')','')
+      call vizardry#echo(index.": ".g:vizardry#siteList[index].site,'')
+      call vizardry#echo('('.g:vizardry#siteList[index].description.')','')
       call add(choices,string(index))
       let index=index+1
       if index<length

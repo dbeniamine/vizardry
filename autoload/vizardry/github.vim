@@ -60,5 +60,28 @@ function! vizardry#github#GenerateQuery(input)
   return s:SearchUrl.a:input
 endfunction
 
+" Get the results returned by curl
+" Return a list of repo
+" a repo is a dictionnary with two values:
+" site: the site name e.g: dbeniamine/vizardry
+" description: the description
+function! vizardry#github#ParseQueryResults(results)
+  " Prepare list (sites and descriptions)
+  let l:results = substitute(a:results, 'null,','"",','g')
+  let lines=split(l:results, '\n')
+  let parsedList=[]
+  for line in lines
+    if line =~ 'full_name'
+      let item={}
+      let item.site=substitute(line, '\s*"full_name"[^"]*"\([^"]*\)"[^\n]*','\1','g')
+    elseif line =~ 'description'
+      let item.description=substitute(line,
+        \ '\s*"description"[^"]*"\([^"\\]*\(\\.[^"\\]*\)*\)"[^\n]*','\1','g')
+      call add(parsedList,item)
+    endif
+  endfor
+  return parsedList
+endfunction
+
 let cpo=save_cpo
 " vim:set et sw=2:

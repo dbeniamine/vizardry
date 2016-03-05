@@ -33,11 +33,15 @@ set cpo&vim
 "           + return the url to the readme (markdown not HTML)
 "       + vizardry#mygrimoires#HelpUrl(site,name)
 "           + return the url to the help (vim help something like '/doc/name.txt')
-"       + vizardry#mygrimoire#SiteFromOrigin(path)
-"           + Return the repo name from the origin url
 "       + vizardry#mygrimoires#GenerateQuery(query)
 "           + Format query from vizardry format to the grimoire api
 "           + return the full query
+"       + vizardry#mygrimoire#ParseQueryResults(results)
+"           + Parse the results from query
+"           + return a list a repo
+"               a repo is a dictionnary with two values:
+"                   + site: the site eg: dbeniamine/vizardry
+"                   + description: the repo description
 "      You can use the provided generic helper defined in the end of this
 "      file. For more info see: autoload/vizardry/github.vim
 "  + Add the grimoire name to the list below
@@ -59,6 +63,7 @@ function! vizardry#grimoire#SetGrimoire(grimoire)
   let g:VizardryHelpUrl=function('vizardry#'.l:grimoire.'#HelpUrl')
   let g:VizardrySiteFromOrigin=function('vizardry#'.l:grimoire.'#SiteFromOrigin')
   let g:VizardryGenerateQuery=function('vizardry#'.l:grimoire.'#GenerateQuery')
+  let g:VizardryParseQueryResults=function('vizardry#'.l:grimoire.'#ParseQueryResults')
 endfunction
 
 " Vizardry grimoire generic helper {{{1
