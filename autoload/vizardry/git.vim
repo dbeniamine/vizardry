@@ -54,13 +54,13 @@ endfunction
 
 " Return the current branch for path
 function! vizardry#git#GetCurrentBranch(path)
-  return 'cd '.a:path.
-        \" && git branch | grep '^*' | sed 's/^* //' | tr -d  '\n'"
+  let branch=systemlist('cd '.a:path.' && git branch')
+  return substitute(branch[match(branch, '^\* ')],'^\* ','','')
 endfunction
 
 " Checkout branch in repo at path
 function! vizardry#git#CheckoutBranch(path,branch)
-  if empty(system('cd '.a:path.' && git branch | grep '.a:branch))
+  if match(systemlist('cd '.a:path.' && git branch'), a:branch) < 0
     " Create a branch
     let checkoutArg=' -b '
   else
@@ -87,8 +87,8 @@ function! vizardry#git#IsAGitRepo(path)
 endfunction
 
 function! vizardry#git#CompleteBranches(path)
-  return system('cd '.a:path.'; git ls-remote --heads 2>/dev/null'.
-        \' | sed "s/.*heads\///"')
+  return substitute(system('cd '.a:path.'; git ls-remote --heads 2>/dev/null'),
+        \'[^\n]*heads/\([^\n]*\n\)','\1','g')
 endfunction
 
 " Function depending on git metchod used {{{1
