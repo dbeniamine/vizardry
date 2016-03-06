@@ -39,12 +39,12 @@ endif
 
 " How to read Readme files
 if !exists("g:VizardryReadmeReader")
-  let g:VizardryReadmeReader='view -c "set ft=markdown" -'
+  let g:VizardryReadmeReader='view -c "set ft=markdown"'
 endif
 
 " How to read help files
 if !exists("g:VizardryHelpReader")
-  let g:VizardryHelpReader='view -c "set ft=help" -'
+  let g:VizardryHelpReader='view -c "set ft=help"'
 endif
 
 " Allow fallback to help/readme
@@ -66,7 +66,7 @@ let g:vizardry#remote#EvolveVimOrgPath = g:vizardry#scriptDir.'/plugin/EvolveVim
 " Functions {{{1
 " Call curl
 function! vizardry#remote#GetURL(url)
-  return system("curl -silent '".a:url."'")
+  return systemlist("curl -silent '".a:url."'")
 endfunction
 
 " Clone a Repo {{{2
@@ -97,7 +97,16 @@ endfunction
 
 " Use the commmand reader to read the content at url
 function! vizardry#remote#readurl(reader,url)
-  execute ":!curl -silent '".a:url."'".' | sed "1,/^$/ d" | '.a:reader
+  " Remove trailing '-' for retrocompatibility with vizardry v1.x
+  let l:reader=substitute(a:reader,'-$','','')
+  let tmpfile = tempname()
+  let contents=vizardry#remote#GetURL(a:url)
+  execute 'redir > '.tmpfile
+  " Remove everything until first empty line and print the contents
+  silent echo join(contents[match(contents,'^$'):],"\n")
+  redir END
+  " Read the temporary file
+  execute ':!'.l:reader.' '.tmpfile
 endfunction
 
 " Display help or Readme
@@ -121,7 +130,7 @@ function! vizardry#remote#DisplayDoc(site,fallback,path,type)
   if l:url== ""
     let fourofour="404"
   else
-    let fourofour=matchstr(split(vizardry#remote#GetURL(l:url),'\n')[0],'404')
+    let fourofour=matchstr(vizardry#remote#GetURL(l:url)[0],'404')
   endif
   " Fallback
   if fourofour != ""

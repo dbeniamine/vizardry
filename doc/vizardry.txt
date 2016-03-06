@@ -29,7 +29,7 @@ Table of Contents                                         *Vizardry-contents* ~
         4.2 Invoke.................................|:Invoke|
         4   5.2.1 Readme Reader....................|Vizardry-readmeReader|
         4   5.2.2 Help Reader......................|Vizardry-helpReader|
-        4   5.2.3 Readme Help fallback............|Vizardry-ReadmeHelpFallback|
+        4   5.2.3 Readme Help fallback.............|Vizardry-ReadmeHelpFallback|
         4.3 Banish.................................|:Banish|
         4.4 Unbanish...............................|:Unbanish|
         4.5 Vanish.................................|:Vanish|
@@ -47,7 +47,11 @@ Current Version: 2.0b1
 
 * v2.0b1 comes with the possibility to search plugins from (virtually) any
   providers (github, bitbuckets,gitlab), see |:Grimoire|. It also provide a
-  major refactor and several minor bug fix.
+  major refactor several minor bug fix, and reduce dependencies to external
+  commands (`sed`, `grep` etc.).
+  Important informations:~
+  Helps and Readme are not read from stdin anymore but from temporary file thus
+  the Reader syntax have changed see: |Vizardry-helpReader|.
 * v1.4 provides several bug fix and the capability of seeing help files from
  Invoke and Evolve prompt. It also add the command `:Vizardry` to show version
  and basic usage.
@@ -243,13 +247,18 @@ Vizardry Commands                                         *Vizardry-commands* ~
     To view the readme, an other instance of vim is called, the command line
     can be configured:
 >
-        let g:VizardryReadmeReader='view -c "set ft=markdown" -'
+        let g:VizardryReadmeReader='view -c "set ft=markdown"'
 <
                                                           *Vizardry-helpReader*
     The help file reader is also configurable, there is the default:
 
 >
-        let g:VizardryHelpReader='view -c "set ft=help" -'
+        let g:VizardryHelpReader='view -c "set ft=help"'
+
+Note:~
+ Since v2.0, the `-` in the end of the reader line is not required anymore,
+ please update your configuration accordingly.
+
 
 <
                                                   *Vizardry-ReadmeHelpFallback*

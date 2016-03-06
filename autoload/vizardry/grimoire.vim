@@ -40,7 +40,7 @@ set cpo&vim
 "                   + site: the site eg: dbeniamine/vizardry
 "                   + description: the repo description
 "           + This function MUST use vizardry#remote#GetURL(url) instead of
-"            system('curl '.url)
+"            system('curl '.url) this function returns the result as a list
 "      You can use the provided generic helper defined in the end of this
 "      file. For more info see: autoload/vizardry/github.vim
 "  + Add the grimoire name to the list below

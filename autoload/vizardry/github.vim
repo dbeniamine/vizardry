@@ -37,14 +37,29 @@ endfunction
 
 " Return the Readme.md url for site/name
 function! vizardry#github#ReadmeUrl(repo)
-  let answer=vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/readme')
+  let answer=join(vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/readme'),"\n")
   return substitute(answer,'.*download_url"[^"]*"\([^"]*\)",.*','\1','')
 endfunction
 
 " Return the Help url for repo (doc/name.txt)
 function! vizardry#github#HelpUrl(repo)
-  return vizardry#grimoire#HelpUrl(s:rawUrl.a:repo,
-        \vizardry#local#GetRepoName(a:repo))
+  let answers=vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/contents/doc')
+  let found=0
+  " Look for a help matching the exact name then ony the last word of the
+  " name, finally or any .txt file in doc directory
+  let name=vizardry#local#GetRepoName(a:repo)
+  let docnames=[name.'.txt',substitute(name,'.*\A\(\a*\)\A*.*','\1.*.txt',''),
+        \".*.txt"]
+  for doc in docnames
+    for ans in answers
+      if ans=~?'"name": "'.doc
+        let found=1
+      elseif ans=~'download_url' && found==1
+        return substitute(ans,'.*download_url"[^"]*"\([^"]*\)",.*','\1','')
+      endif
+    endfor
+  endfor
+  return ""
 endfunction
 
 " Return the repo name from the origin url
@@ -61,17 +76,15 @@ endfunction
 "       + description: the description
 function! vizardry#github#HandleQuery(input)
   let l:results=vizardry#remote#GetURL(s:SearchUrl.a:input)
-  " Prepare list (sites and descriptions)
-  let l:results = substitute(l:results, 'null,','"",','g')
-  let lines=split(l:results, '\n')
   let parsedList=[]
-  for line in lines
+  for line in results
     if line =~ 'full_name'
       let item={}
       let item.site=substitute(line, '\s*"full_name"[^"]*"\([^"]*\)"[^\n]*','\1','g')
     elseif line =~ 'description'
-      let item.description=substitute(line,
-        \ '\s*"description"[^"]*"\([^"\\]*\(\\.[^"\\]*\)*\)"[^\n]*','\1','g')
+      let item.description=substitute(substitute(line,
+        \ '\s*"description"[^"]*"\([^"\\]*\(\\.[^"\\]*\)*\)"[^\n]*','\1','g'),
+        \ 'null', '""', '')
       call add(parsedList,item)
     endif
   endfor

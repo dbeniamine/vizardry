@@ -41,12 +41,16 @@
 
 Current Version: 2.0b1
 
-* v2.0b1 comes with the possibility to search plugins from (virtually) any providers
-    (github, bitbuckets,gitlab), see [Grimoire](#grimoire). It also provide a
-    major refactor and several minor bug fix.
-* v1.4 provides several bug fix and the capability of seeing help files from
+*   v2.0b1 comes with the possibility to search plugins from (virtually) any
+    providers (github, bitbuckets,gitlab), see [Grimoire](#grimoire). It also
+    provide a major refactor, several minor bug fix, and reduce dependencies
+    to external commands (`sed`, `grep` etc.).
+    **Important informations**: Helps and Readme are not read from stdin anymore
+    but from temporary file thus the Reader syntax have changed see:
+    [here](#display-readme-on-evolve).
+*   v1.4 provides several bug fix and the capability of seeing help files from
  Invoke and Evolve prompt.
-* v1.3 allow to Invoke directly from Scry, to do so, I had to modify the input
+*   v1.3 allow to Invoke directly from Scry, to do so, I had to modify the input
   method (using `:input()`, instead of `:getchar()`), for the user the result
   is that it is now necessary to hit 'enter' after answering a prompt from
   Vizardry
@@ -240,11 +244,14 @@ Just as easy.
 To view the readme, an other instance of vim is called, the command line can
 be configured:
 
-    let g:VizardryReadmeReader='view -c "set ft=markdown" -'
+    let g:VizardryReadmeReader='view -c "set ft=markdown"'
 
 The help file reader is also configurable, there is the default:
 
-    let g:VizardryHelpReader='view -c "set ft=help" -'
+    let g:VizardryHelpReader='view -c "set ft=help"'
+
+**Note:** since v2.0, the `-` in the end of the reader line is not required
+anymore, please update your configuration accordingly.
 
 Finally if readme or help is missing, Vizardry will try to search for the
 other one, if you dont like this behavior, you can prevent it:
