@@ -37,9 +37,8 @@ endfunction
 
 " Return the Readme.md url for site/name
 function! vizardry#github#ReadmeUrl(repo)
-  let readmeurl=system("curl -silent '".s:APIUrl."repos/".
-        \a:repo."/readme' | grep download_url")
-  return substitute(readmeurl,'\s*"download_url"[^"]*"\(.*\)",.*','\1','')
+  let answer=vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/readme')
+  return substitute(answer,'.*download_url"[^"]*"\([^"]*\)",.*','\1','')
 endfunction
 
 " Return the Help url for repo (doc/name.txt)
