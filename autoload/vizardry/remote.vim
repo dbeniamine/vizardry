@@ -365,16 +365,11 @@ endfunction
 
 " Upgrade a specific plugin (vim.org)
 function s:VimOrgEvolve(path)
-  let name=substitute(a:path,'.*/','','')
-  call vizardry#echo(name.' is not a git repo, trying to update it as a vim.org script', 's')
+  let name=vizardry#local#GetRepoName(a:path)
+  call vizardry#echo(name.' is not a git repo, trying to update it as a vim.org script', 'w')
   call vizardry#echo("Directly updating from vim.org is deprecated\n".
         \"You can install ".name." from vim.org's github account:\n".
-        \":Scry -u vim-scripts ".name, 'w')
-  let l:ret=system(g:vizardry#remote#EvolveVimOrgPath.' '.a:path)
-  call vizardry#echo(l:ret,'')
-  if l:ret=~'upgrading .*'
-    return a:path
-  endif
+        \":Scry -u vim-scripts ".name, 'e')
   return ''
 endfunction
 

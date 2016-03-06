@@ -43,7 +43,7 @@ Current Version: 2.0b1
 
 *   v2.0b1 comes with the possibility to search plugins from (virtually) any
     providers (github, bitbuckets,gitlab), see [Grimoire](#grimoire). It also
-    provide a major refactor, several minor bug fix, and reduce dependencies
+    provide a major refactor, several minor bug fix, and remove dependencies
     to external commands (`sed`, `grep` etc.).
     **Important informations**: Helps and Readme are not read from stdin anymore
     but from temporary file thus the Reader syntax have changed see:
@@ -93,12 +93,7 @@ features including:
 + Vizardry requires [pathogen](https://github.com/tpope/vim-pathogen). But you
   already have pathogen installed, don't you?
 
-+ It also needs curl, as well as commandline programs that come with most
-  \*nix systems.
-
-+ *Optional:* [atool](http://freecode.com/projects/atool) is required for
-upgrading scripts from vim.org (although it is preferable to use vim.org
-github repositories).
++ It also needs git, curl, and basic \*nix commands.
 
 + You will probably have issues if you use a Windows OS.
 
@@ -302,9 +297,8 @@ upgraded.
 
 #### Evolve from vim.org
 
-Although the following method works fine, it is recommended to always install
-plugins by cloning a repository. To install plugin found at vim.org by from
-github use:
+**Evolving directly from vim.org is deprecated.**
+To install plugin found at vim.org from github use:
 
     :Invoke -u vim-scripts <plugin-name>
 
@@ -313,18 +307,6 @@ Were &lt;plugin-name&gt; is the actual name of the plugin at vim.org
 You can also search a plugin by vim.org id:
 
     :Invoke -u vim-scripts in:readme script_id=<id>
-
-`:Evolve` is able to upgrade plugin downloaded from vim.org, to do so,
-you need to create a `.metainfos` file at the root of the plugin directory
-(not yout bundle directory). Such a file is composed of two lines:
-
-1. the vimscript url (at vim.org)
-2. The current version number (0 for initialization)
-
-**Note:**
-
-+   `atool` is required for upgrading scripts from vim.org, see
-    [Requirements](#requirements).
 
 ### <a name="vizardry-cmd">Vizardry</a>
 
