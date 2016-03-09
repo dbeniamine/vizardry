@@ -1,6 +1,7 @@
 " Vim plugin for installing other vim plugins.
 " Maintainer: David Beniamine
 "
+" Copyright (C) 2015, David Beniamine. All rights reserved.
 " Copyright (C) 2013, James Kolb. All rights reserved.
 "
 " This program is free software: you can redistribute it and/or modify
@@ -21,26 +22,47 @@ if !exists("g:loaded_vizardry")
   finish
 endif
 
+" This files contains usefull function that might be used by any other
+" autoloaded file
+
 let g:save_cpo = &cpo
 set cpo&vim
 
 " Settings {{{1
 
-" A few path
+" Vizardry base path
 let g:vizardry#scriptDir = expand('<sfile>:p:h').'/..'
+" Bundle path
 let g:vizardry#bundleDir = substitute(g:vizardry#scriptDir,
       \'/[^/]*/[^/]*/[^/]*$', '', '')
-if exists("g:VizardryGitBaseDir")
+
+" Path to bundle from gitbasedir
+if g:VizardryGitMethod != "clone"
   let g:vizardry#relativeBundleDir=substitute(
         \g:vizardry#bundleDir,g:VizardryGitBaseDir,'','')
   let g:vizardry#relativeBundleDir=substitute(
         \g:vizardry#relativeBundleDir,'^/','','')
 endif
 
+" Repo name from path{{{1
+
+" Return the name of the bundle admitting that the origin address ends by
+" /name[.git]
+function vizardry#GetRepoName(path)
+  return substitute(a:path,'.*/\([^\.]*\).*','\1','')
+endfunction
+
+
 " Prompt {{{1
 
-" Colored echo
-" If extra argument is >0, then return the input
+" Should be used for every messages
+" Type can be:
+"   e for error
+"   w for warning
+"   q for asking a question
+"   s to tell the user Vizardry is searching somethin
+"   D to print only in debug mode
+" If extra argument is >0, then return the user answer
 function! vizardry#echo(msg,type,...)
   let ret=''
   if a:type=='e'
@@ -70,6 +92,7 @@ function! vizardry#echo(msg,type,...)
   return ret
 endfunction
 
+" Show Vizardry usage, called by :Vizardry
 function! vizardry#usage()
   call vizardry#echo("Welcome to vizardry ".g:loaded_vizardry,"q")
   echo "\n"
@@ -84,6 +107,7 @@ function! vizardry#usage()
   call vizardry#echo("For more info look at :help vizardry","w")
 endfunction
 
+" Helper to print choises properly
 function! vizardry#listChoices(choices)
   let length = len(a:choices)
   if length == 0
@@ -103,6 +127,9 @@ function! vizardry#listChoices(choices)
   return ret.'or '.a:choices[length-1]
 endfunction
 
+" Prompt the user with prompt
+" Ensure the answer is correct aka is a string contained in the list
+" inputChoises
 function! vizardry#doPrompt(prompt, inputChoices)
   while 1
     let choice=vizardry#echo(a:prompt."\n",'q',1)
@@ -118,12 +145,15 @@ endfunction
 " bundle management {{{1
 
 " Test existing bundle
+" Returns "" if the bundle does not exists
+"            the full path to the bundle if it exists
 function! vizardry#testBundle(bundle)
   if a:bundle!=""
     return glob(g:vizardry#bundleDir.'/'.a:bundle.'/')!=''
   endif
 endfunction
 
+" Find a valid bundle name for bundle avoiding to erase existing bundles
 function! vizardry#formValidBundle(bundle)
   if !vizardry#testBundle(a:bundle) && !vizardry#testBundle(a:bundle.'~')
     return a:bundle
@@ -138,11 +168,13 @@ function! vizardry#formValidBundle(bundle)
 endfunction
 
 " Providers {{{1
+" List existing grimoires
 function! vizardry#ListGrimoires()
   return s:VizardryAvailableGrimoires
 endfunction
 
 " List Invoked / Banished plugins {{{2
+" List are returne as a string
 function! vizardry#ListAllInvoked(A,L,P)
   return join(vizardry#ListInvoked('*'),"\n")
 endfunction
@@ -151,6 +183,8 @@ function! vizardry#ListAllBanished(A,L,P)
   return join(vizardry#ListBanished('*'),"\n")
 endfunction
 
+" List invoked bundle matching "match"
+" return a list of matches
 function! vizardry#ListInvoked(match)
   if a:match =~'\(*\)$'
     let l:match=a:match.'[^~]'
@@ -161,6 +195,8 @@ function! vizardry#ListInvoked(match)
         \'[^\n]*/\([^\n]*\(\n\|$\)\)','\1','g'),'\n')
 endfunction
 
+" List banished bundle matching "match"
+" return a list of matches
 function! vizardry#ListBanished(match)
   return split(substitute(glob(g:vizardry#bundleDir.'/'.a:match.'~'),
         \'[^\n]*/\([^\~]*\)\~\(\n\|$\)','\1\2','g'),'\n')
@@ -215,6 +251,7 @@ function! vizardry#DisplayBanished()
 endfunction
 
 " Reload scripts {{{2
+" TODO: autoloaded files
 function! vizardry#ReloadScripts()
   " Force pathogen reload
   unlet g:loaded_pathogen

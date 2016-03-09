@@ -1,6 +1,7 @@
 " Vim plugin for installing other vim plugins.
 " Maintainer: David Beniamine
 "
+" Copyright (C) 2015, David Beniamine. All rights reserved.
 " Copyright (C) 2013, James Kolb. All rights reserved.
 "
 " This program is free software: you can redistribute it and/or modify
@@ -24,20 +25,14 @@ endif
 let g:save_cpo = &cpo
 set cpo&vim
 
-" Return the name of the bundle admitting that the origin address ends by
-" /name[.git]
-function vizardry#local#GetRepoName(path)
-  return substitute(a:path,'.*/\([^\.]*\).*','\1','')
-endfunction
-
 " UnBannish {{{1
-function! vizardry#local#UnbanishCommand(bundle)
+function! vizardry#banish#UnbanishCommand(bundle)
   let niceBundle = substitute(a:bundle, '\s\s*', '', 'g')
   let matchList = vizardry#ListBanished(a:bundle)
   if len(matchList) != 0
     let success=0
     for aMatch in matchList
-      if vizardry#local#Unbanish(aMatch, 0) != 0
+      if vizardry#banish#Unbanish(aMatch, 0) != 0
         call vizardry#echo('Failed to unbanish "'.aMatch.'"','e')
       else
         call vizardry#echo("Unbanished ".aMatch,'')
@@ -54,7 +49,7 @@ function! vizardry#local#UnbanishCommand(bundle)
   endif
 endfunction
 
-function! vizardry#local#Unbanish(bundle, reload)
+function! vizardry#banish#Unbanish(bundle, reload)
   " Retrieve paths
   let l:path=vizardry#git#PathToBundleAsList(a:bundle)
   " Prepare command
@@ -63,7 +58,7 @@ function! vizardry#local#Unbanish(bundle, reload)
         \l:path[1].' '.l:path[1].'~ ',l:path[1],'Invoke')
   call system(l:cmd)
   let ret=v:shell_error
-  call vizardry#local#UnbanishMagic(a:bundle)
+  call vizardry#magic#UnbanishMagic(a:bundle)
   if a:reload
     call vizardry#ReloadScripts()
   endif
@@ -72,7 +67,7 @@ endfunction
 
 " Banish {{{1
 " Temporarily deactivate a plugin
-function! vizardry#local#Banish(input, type)
+function! vizardry#banish#Banish(input, type)
   if a:input == ''
     call vizardry#echo('Banish what?','w')
     return
@@ -105,7 +100,7 @@ function! vizardry#local#Banish(input, type)
             \l:path[1],a:type)
 
       let error=system(l:cmd)
-      call vizardry#local#BanishMagic(aMatch)
+      call vizardry#magic#BanishMagic(aMatch)
       if v:shell_error!=0
         call vizardry#echo(a:type.'ed '.aMatch,'')
       else
@@ -114,53 +109,6 @@ function! vizardry#local#Banish(input, type)
       endif
     endfor
   endif
-endfunction
-
-" Magic {{{1
-function! vizardry#local#MagicName(plugin)
-  if a:plugin == '*'
-    return g:vizardry#scriptDir.'/magic/magic.vim'
-  else
-    return g:vizardry#scriptDir.'/magic/magic_'.a:plugin.'.vim'
-  endif
-endfunction
-
-function! vizardry#local#BanishMagic(plugin)
-  let fileName = vizardry#local#MagicName(a:plugin)
-  call system('mv '.fileName.' '.fileName.'~')
-endfunction
-
-function! vizardry#local#UnbanishMagic(plugin)
-  let fileName = vizardry#local#MagicName(a:plugin)
-  call system('mv '.fileName.'~ '.fileName)
-endfunction
-
-function! vizardry#local#Magic(incantation)
-  let incantationList = split(a:incantation, ' ')
-  if len(incantationList) == 0
-    call vizardry#echo("No plugin given",'w')
-    return
-  endif
-  let plugin = incantationList[0]
-  let incantation = join(incantationList[1:],' ')
-
-  try
-    exec incantation
-    call system('mkdir '.g:vizardry#scriptDir.'/magic')
-    call system('cat >> '.vizardry#local#MagicName(plugin), incantation."\n")
-  endtry
-endfunction
-
-function! vizardry#local#MagicEdit(incantation)
-  exec "edit" vizardry#local#MagicName(a:incantation)."*"
-endfunction
-
-function! vizardry#local#MagicSplit(incantation)
-  exec "split" vizardry#local#MagicName(a:incantation)."*"
-endfunction
-
-function! vizardry#local#MagicVSplit(incantation)
-  exec "vsplit ".vizardry#local#MagicName(a:incantation)."*"
 endfunction
 
 let cpo=save_cpo

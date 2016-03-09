@@ -1,5 +1,10 @@
-(A) +Grimoires Issue / call for pull request
-(A) +Grimoires Documentation
-(A) +Grimoires bitbucket provider
-(A) +Grimoires hooks for gitlabs provider
-(B) +cvs Documentation cvs abstraction, call for pull request
+(A) +Grimoires bitbucket grimoire
+(A) +Grimoires gitlabs grimoire
+(B) +Grimoires Documentation: Limit references to github
+(B) +Grimoires Per grimoire documentation
+(B) +pathogen Reload autoloaded file see pathogen / scriptease
+x 2016-03-05 (A) +Grimoires Issue / call for pull request
+x 2016-03-06 (A) +Grimoires Documentation
+x 2016-03-09 (A) +General document code
+x 2016-03-09 (A) +General refactor small untis autoload
+x 2016-03-09 (B) +cvs Documentation cvs abstraction, call for pull request

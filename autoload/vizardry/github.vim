@@ -1,6 +1,7 @@
 " Vim plugin for installing other vim plugins.
 " Maintainer: David Beniamine
 "
+" Copyright (C) 2015, David Beniamine. All rights reserved.
 " Copyright (C) 2013, James Kolb. All rights reserved.
 "
 " This program is free software: you can redistribute it and/or modify
@@ -47,7 +48,7 @@ function! vizardry#github#HelpUrl(repo)
   let found=0
   " Look for a help matching the exact name then ony the last word of the
   " name, finally or any .txt file in doc directory
-  let name=vizardry#local#GetRepoName(a:repo)
+  let name=vizardry#GetRepoName(a:repo)
   let docnames=[name.'.txt',substitute(name,'.*\A\(\a*\)\A*.*','\1.*.txt',''),
         \".*.txt"]
   for doc in docnames

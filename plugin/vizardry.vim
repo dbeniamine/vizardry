@@ -1,6 +1,7 @@
 " Vim plugin for installing other vim plugins.
 " Maintainer: David Beniamine
 "
+" Copyright (C) 2015, David Beniamine. All rights reserved.
 " Copyright (C) 2013, James Kolb. All rights reserved.
 "
 " This program is free software: you can redistribute it and/or modify
@@ -23,13 +24,14 @@ endif
 let g:save_cpo = &cpo
 set cpo&vim
 
-let g:loaded_vizardry = "v2.0b1"
+let g:loaded_vizardry = "v2.0b2"
 
 " Plugin Settings {{{1
 
 " Installation method simple clone / submodules
 if !exists("g:VizardryGitMethod")
   let g:VizardryGitMethod = "clone"
+  " Git basedir is not needed for clone, but should be defined to avoid errors
   let g:VizardryGitBaseDir=""
 elseif (g:VizardryGitMethod =="submodule add")
   " Commit message for submodule method
@@ -50,28 +52,37 @@ elseif (g:VizardryGitMethod =="submodule add")
 endif
 
 " Commands definitions {{{1
+" :Vizardry (version/usage)
 command! -nargs=0 Vizardry call vizardry#usage()
+" :Grimoire (choose / list bundle providers)
 command! -nargs=? -complete=custom,vizardry#grimoire#ListGrimoires Grimoire
       \ call vizardry#grimoire#SetGrimoire(<q-args>)
-command! -nargs=? Invoke call vizardry#remote#Invoke(<q-args>)
+" :Invoke (install / reload bundles)
+command! -nargs=? Invoke call vizardry#invoke#Invoke(<q-args>)
+" :Banish (disable a bundle)
 command! -nargs=? -complete=custom,vizardry#ListAllInvoked Banish
-      \ call vizardry#local#Banish(<q-args>, 'Banish')
-command! -nargs=? -complete=custom,vizardry#ListAllInvoked Vanish
-      \ call vizardry#local#Banish(<q-args>, 'Vanish')
+      \ call vizardry#banish#Banish(<q-args>, 'Banish')
+" :Unbanish (reenable a bundle)
 command! -nargs=? -complete=custom,vizardry#ListAllBanished Unbanish
-      \ call vizardry#local#UnbanishCommand(<q-args>)
-command! -nargs=? -complete=custom,vizardry#remote#EvolveCompletion Evolve
-      \ call vizardry#remote#Evolve(<q-args>,0)
+      \ call vizardry#banish#UnbanishCommand(<q-args>)
+" :Vanish (remove a bundle)
+command! -nargs=? -complete=custom,vizardry#ListAllInvoked Vanish
+      \ call vizardry#banish#Banish(<q-args>, 'Vanish')
+" :Evolve (upgrade a bundle)
+command! -nargs=? -complete=custom,vizardry#evolve#EvolveCompletion Evolve
+      \ call vizardry#evolve#Evolve(<q-args>,0)
+" :Scry (list / search bundles)
 command! -nargs=? Scry
-      \ call vizardry#remote#Scry(<q-args>)
+      \ call vizardry#invoke#Scry(<q-args>)
+" :Magic (manage configuration, not activelly maintained)
 command! -nargs=? -complete=custom,vizardry#ListAllInvoked Magic
-      \ call vizardry#local#Magic(<q-args>)
+      \ call vizardry#magic#Magic(<q-args>)
 command! -nargs=? -complete=custom,vizardry#ListAllInvoked Magicedit
-      \ call vizardry#local#MagicEdit(<q-args>)
+      \ call vizardry#magic#MagicEdit(<q-args>)
 command! -nargs=? -complete=custom,vizardry#ListAllInvoked Magicsplit
-      \ call vizardry#local#MagicSplit(<q-args>)
+      \ call vizardry#magic#MagicSplit(<q-args>)
 command! -nargs=? -complete=custom,vizardry#ListAllInvoked Magicvsplit
-      \ call vizardry#local#MagicVSplit(<q-args>)
+      \ call vizardry#magic#MagicVSplit(<q-args>)
 
 let cpo=save_cpo
 " vim:set et sw=2:
