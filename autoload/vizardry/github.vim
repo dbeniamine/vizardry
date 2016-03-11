@@ -83,9 +83,11 @@ function! vizardry#github#HandleQuery(input)
       let item={}
       let item.site=substitute(line, '\s*"full_name"[^"]*"\([^"]*\)"[^\n]*','\1','g')
     elseif line =~ 'description'
-      let item.description=substitute(substitute(line,
-        \ '\s*"description"[^"]*"\([^"\\]*\(\\.[^"\\]*\)*\)"[^\n]*','\1','g'),
-        \ 'null', '""', '')
+      if line=~' null,'
+        let item.description="No description available"
+      else
+        let item.description=substitute(line,'\s*\S* "\(.*\)",','\1','')
+      endif
       call add(parsedList,item)
     endif
   endfor
