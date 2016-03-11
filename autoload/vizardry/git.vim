@@ -50,7 +50,7 @@ endfunction
 
 " Return the init submodule cmd as a string
 function! vizardry#git#InitSubmoduleCmd(path)
-  return 'cd '.a:path.' && git submodule init && git submodule update'
+  return 'cd '.a:path.' && git submodule init && git submodule update --recursive'
 endfunction
 
 " Return the current branch for path
