@@ -39,7 +39,7 @@
     1. [Configuration](#magic-configuration)
     2. [Commands](#magic-commands)
         1. [:Magic](#magic-cmd)
-        2. [:MagicEdit](#magicedit)
+        2. [:Magicedit](#magicedit)
         3. [:Magicsplit](#magicsplit)
         4. [:Magicvsplit](#magicvsplit)
         5. [:MagicCommit](#magiccommit)
@@ -366,9 +366,9 @@ keep them in `~/.vim/plugin/magic`:
 
 Adds &lt;command&gt; to &lt;bundle&gt; magic file and execute it.
 
-### :MagicEdit
+### :Magicedit
 
-    :MagicEdit <bundle>
+    :Magicedit <bundle>
 
 Edits magic file for &lt;bundle&gt;.
 

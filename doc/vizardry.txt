@@ -43,7 +43,7 @@ Table of Contents                                         *Vizardry-contents* ~
         5.1 Configuration..........................|Vizardry-MagicConfig|
         5.2 Commands...............................|Vizardry-MagicCommands|
             5.2.1 Magic............................|:Magic|
-            5.2.2 MagicEdit........................|:MagicEdit|
+            5.2.2 Magicedit........................|:Magicedit|
             5.2.3 Magicsplit.......................|:Magicsplit|
             5.2.4 Magicvsplit......................|:Magicvsplit|
             5.2.5 MagicCommit......................|:MagicCommit|
@@ -374,7 +374,7 @@ bundle, this pas can be modified (and must be modified for submodule mode
 
     Adds <command> to <bundle> magic file and execute it
 
-:MagicEdit <bundle>                                                *:MagicEdit*
+:Magicedit <bundle>                                                *:Magicedit*
 
     Edit magic file for <bundle>
 
