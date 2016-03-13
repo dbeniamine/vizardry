@@ -107,6 +107,12 @@ if(g:VizardryGitMethod == "clone")
     return 'true' " We do not commit anything in clone mode
   endfunction
 
+  " Return the add command as a string {{{2
+  function vizardry#git#AddFileCmd(path,file)
+    return 'true' " We do not add nything
+  endfunction
+
+
   " Return the mv command as a string
   function! vizardry#git#MvCmd(src, dest)
     return 'mv '.a:src.' '.a:dest
@@ -115,6 +121,11 @@ if(g:VizardryGitMethod == "clone")
   " Return the rm command as a string
   function! vizardry#git#RmCmd(path)
     return 'rm -rf '.a:path.' > /dev/null'
+  endfunction
+
+  " Return the rm command as a string for a bundle
+  function! vizardry#git#RmBundleCmd(path)
+    return vizardry#git#RmCmd(a:path)
   endfunction
 
   " Return the clone command as a string
@@ -143,11 +154,22 @@ else
     return 'git mv '.a:src.' '.a:dest
   endfunction
 
-  " Return the rm command as a string
-  function! vizardry#git#RmCmd(path)
+  " Return the rm command as a string for a bundle
+  function! vizardry#git#RmBundleCmd(path)
     return 'git submodule deinit -f '.a:path.' && git rm -rf '.a:path.
           \ ' && rm -rf .git/modules/'.a:path
   endfunction
+
+  " Return the rm command as a string
+  function! vizardry#git#RmCmd(path)
+    return 'git rm -rf '.a:path
+  endfunction
+
+  " Return the add command as a string {{{2
+  function vizardry#git#AddFileCmd(path, file)
+    return 'cd '.a:path.' && '.'git add '.a:file
+  endfunction
+
 
   " Return the clone command as a string
   function! vizardry#git#CloneCmd(repo,path)

@@ -1,4 +1,5 @@
 (A) +Grimoires bitbucket grimoire
+(A) +Magic TEST banish,unbanish,vanish clone mode
 (A) +Grimoires gitlabs grimoire
 (B) +Grimoires Documentation: Limit references to github
 (B) +Grimoires Per grimoire documentation

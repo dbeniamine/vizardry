@@ -83,8 +83,8 @@ function! vizardry#invoke#handleInvokation(site, description, inputNice, index)
     call vizardry#echo("Result ".a:index."/".len.
           \ ": ".a:site."\n(".a:description.")\n\n",'')
     let response = vizardry#doPrompt("Clone as \"".inputNice.
-          \ "\"? (Yes/Rename/Displayreadme/displayHelp/Next/Previous/Abort)",
-          \ ['y','r','d','h','n','p','a'])
+          \ "\": [Yes/Rename/Displayreadme/displayHelp/Next/Previous/Abort]",
+          \ ['y','r','d','h','n','p','a'],0)
     if response ==? 'y'
       call vizardry#invoke#grabRepo(a:site, inputNice)
       call vizardry#ReloadScripts()
@@ -207,7 +207,7 @@ function! vizardry#invoke#Invoke(input)
     let exists = vizardry#testBundle(inputNice)
     if exists
       let response = vizardry#doPrompt('You already have a bundle called '
-            \ .inputNice.'. Search anyway? (Yes/No)',['y','n'])
+            \ .inputNice.'. Search anyway ?',['y','n'],1)
       if response == 'n'
         return
       endif
@@ -228,7 +228,7 @@ function! vizardry#invoke#Invoke(input)
         let matchingBundle = strpart(matchingBundle,0,strlen(matchingBundle)-1)
         call vizardry#echo('This is the repository for banished bundle "'.
               \matchingBundle.'"','w')
-        if( vizardry#doPrompt("Unbanish it? (Yes/No)", ['y', 'n'])== 'y')
+        if( vizardry#doPrompt("Unbanish it ?", ['y', 'n'])== 'y',1)
           call vizardry#local#Unbanish(matchingBundle, 1)
           execute ':Helptags'
         endif
@@ -270,7 +270,7 @@ function! vizardry#invoke#Scry(input)
     endwhile
     call add(choices,'q')
     let ans=vizardry#doPrompt("Invoke script number [0:".length.
-          \"] or quit Scry (q) ?",choices)
+          \"] or quit Scry (q) ?",choices,0)
     if ans!='q'
       call vizardry#invoke#Invoke(ans)
     endif

@@ -53,12 +53,12 @@ function! vizardry#banish#Unbanish(bundle, reload)
   " Retrieve paths
   let l:path=vizardry#git#PathToBundleAsList(a:bundle)
   " Prepare command
+  let additionalFiles=vizardry#magic#UnbanishMagic(a:bundle)
   let cmd='cd '.l:path[0].' && '.vizardry#git#MvCmd(l:path[1].'~',l:path[1])
         \.' && '.vizardry#git#CommitCmd(l:path[0],
-        \l:path[1].' '.l:path[1].'~ ',l:path[1],'Invoke')
+        \l:path[1].' '.l:path[1].'~ '.additionalFiles,l:path[1],'Invoke')
   call system(l:cmd)
   let ret=v:shell_error
-  call vizardry#magic#UnbanishMagic(a:bundle)
   if a:reload
     call vizardry#ReloadScripts()
   endif
@@ -92,16 +92,16 @@ function! vizardry#banish#Banish(input, type)
         let l:cmd.=vizardry#git#MvCmd(l:path[1],l:path[1].'~')
         let l:commitpath.=' '.l:path[1].'~'
       else
-        let l:cmd.=vizardry#git#RmCmd(l:path[1])
+        let l:cmd.=vizardry#git#RmBundleCmd(l:path[1])
       endif
 
+      let additionalFiles=vizardry#magic#BanishMagic(aMatch,a:type)
       " Add commit to cmd
-      let l:cmd.=' && '.vizardry#git#CommitCmd(l:path[0],l:commitpath,
-            \l:path[1],a:type)
+      let l:cmd.=' && '.vizardry#git#CommitCmd(l:path[0],l:commitpath.
+            \' '.additionalFiles,l:path[1],a:type)
 
       let error=system(l:cmd)
-      call vizardry#magic#BanishMagic(aMatch)
-      if v:shell_error!=0
+      if v:shell_error==0
         call vizardry#echo(a:type.'ed '.aMatch,'')
       else
         let error = strpart(error, 0, strlen(error)-1)

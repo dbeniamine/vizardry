@@ -54,8 +54,8 @@ function s:GitEvolve(path, branch)
     let continue=0
     let name=vizardry#GetRepoName(a:path)
     while continue==0
-      let response=vizardry#doPrompt(name.' Evolved, show Readme, Log or Continue ? (r,l,c,h)',
-            \['r','l','c', 'h'])
+      let response=vizardry#doPrompt(name.' Evolved, show Readme, Log or Continue ?',
+            \['r','l','c', 'h'],1)
       if response ==? 'r' || response ==? 'h'
         let l:site=g:VizardrySiteFromOrigin(vizardry#git#GetOrigin(a:path))
         if response ==? 'r'

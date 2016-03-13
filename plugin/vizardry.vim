@@ -24,22 +24,27 @@ endif
 let g:save_cpo = &cpo
 set cpo&vim
 
-let g:loaded_vizardry = "v2.0b2"
+let g:loaded_vizardry = "v2.0b3"
 
 " Plugin Settings {{{1
+
+" Vizardry base path
+let g:vizardryScriptDir = expand('<sfile>:p:h')
+
 
 " Installation method simple clone / submodules
 if !exists("g:VizardryGitMethod")
   let g:VizardryGitMethod = "clone"
   " Git basedir is not needed for clone, but should be defined to avoid errors
   let g:VizardryGitBaseDir=""
-elseif (g:VizardryGitMethod =="submodule add")
+elseif (g:VizardryGitMethod !="clone")
   " Commit message for submodule method
   if !exists("g:VizardryCommitMsgs")
     let g:VizardryCommitMsgs={'Invoke': "[Vizardry] Invoked vim submodule:",
           \'Banish': "[Vizardry] Banished vim submodule:",
           \'Vanish': "[Vizardry] Vanished vim submodule:",
           \'Evolve': "[Vizardry] Evolved vim submodule:",
+          \'Magic':  "[Vizardry] Upadated Magic file:",
           \}
   endif
   " Git root directory for submodules
@@ -83,6 +88,8 @@ command! -nargs=? -complete=custom,vizardry#ListAllInvoked Magicsplit
       \ call vizardry#magic#MagicSplit(<q-args>)
 command! -nargs=? -complete=custom,vizardry#ListAllInvoked Magicvsplit
       \ call vizardry#magic#MagicVSplit(<q-args>)
+command! -nargs=? -complete=custom,vizardry#magic#ListAllMagic MagicCommit
+      \ call vizardry#magic#CommitMagic(<q-args>)
 
 let cpo=save_cpo
 " vim:set et sw=2:

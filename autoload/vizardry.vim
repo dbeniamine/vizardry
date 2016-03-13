@@ -29,12 +29,10 @@ let g:save_cpo = &cpo
 set cpo&vim
 
 " Settings {{{1
-
-" Vizardry base path
-let g:vizardry#scriptDir = expand('<sfile>:p:h').'/..'
 " Bundle path
-let g:vizardry#bundleDir = substitute(g:vizardry#scriptDir,
+let g:vizardry#bundleDir = substitute(g:vizardryScriptDir.'/..',
       \'/[^/]*/[^/]*/[^/]*$', '', '')
+
 
 " Path to bundle from gitbasedir
 if g:VizardryGitMethod != "clone"
@@ -130,9 +128,15 @@ endfunction
 " Prompt the user with prompt
 " Ensure the answer is correct aka is a string contained in the list
 " inputChoises
-function! vizardry#doPrompt(prompt, inputChoices)
+" if echoChoices is 1, show the list of choices in the prompt
+function! vizardry#doPrompt(prompt, inputChoices, echoChoices)
+  if a:echoChoices == 0
+    let prompt=a:prompt."\n"
+  else
+    let prompt=a:prompt.' ['.join(a:inputChoices,'/')."]\n"
+  endif
   while 1
-    let choice=vizardry#echo(a:prompt."\n",'q',1)
+    let choice=vizardry#echo(prompt,'q',1)
     if index(a:inputChoices,choice,0,1) >= 0
       echo "\n"
       return choice

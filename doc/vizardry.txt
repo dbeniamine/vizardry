@@ -39,18 +39,28 @@ Table of Contents                                         *Vizardry-contents* ~
             4.6.2 Evolve from vim.org..............|Vizardry-evolveVim.org|
         4.7 Scry...................................|:Vizardry|
         4.8 Grimoire...............................|:Grimoire|
-    5. Spread the word ............................|Vizardry-spread|
-    6. Get involved ...............................|Vizardry-getInvolved|
+    5. Magic.......................................|Vizardry-Magic|
+        5.1 Configuration..........................|Vizardry-MagicConfig|
+        5.2 Commands...............................|Vizardry-MagicCommands|
+            5.2.1 Magic............................|:Magic|
+            5.2.2 MagicEdit........................|:MagicEdit|
+            5.2.3 Magicsplit.......................|:Magicsplit|
+            5.2.4 Magicvsplit......................|:Magicvsplit|
+            5.2.5 MagicCommit......................|:MagicCommit|
+    6. Spread the word ............................|Vizardry-spread|
+    7. Get involved ...............................|Vizardry-getInvolved|
 
 ===============================================================================
 Release notes                                         *Vizardry-releaseNotes* ~
 
-Current Version: 2.0b1
+Current Version: 2.0b3
 
-* v2.0b1 comes with the possibility to search plugins from (virtually) any
+* v2.0 comes with the possibility to search plugins from (virtually) any
   providers (github, bitbuckets,gitlab), see |:Grimoire|. It also provide a
   major refactor several minor bug fix, and remove dependencies to external
   commands (`sed`, `grep` etc.).
+  It also re enables `:Magic` family commands with support for submodule mode
+  see |Vizardry-Magic|.
   Important informations:~
   Helps and Readme are not read from stdin anymore but from temporary file thus
   the Reader syntax have changed see: |Vizardry-helpReader|.
@@ -120,10 +130,15 @@ Set the following variables in your vimrc:
 >
     let g:VizardryGitMethod="submodule add"
     let g:VizardryGitBaseDir="/path/to/your/git/repo"
+    let g:VizardryMagicDir=g:VizardryGitBaseDir.'/vim/plugin/magic'
 <
 
 The second variable ** must be** the root of the repo containing your vim
 files.
+
+The third is the path to your `Magic` configuration files see |:Magic|, it MUST
+be set even if you don't use |:Magic| command family or you will have error
+messages on every commands from `:Banish` family.
 
 Optionally you can set the vim commit messages (the name of the modified
 plugin will always be happened in the end of the message, the proposed values
@@ -335,6 +350,48 @@ Help wanted:~
 Currently only github is available, but it is very easy to add a new Grimoire,
 see https://github.com/dbeniamine/vizardry/issues/3.
 
+
+===============================================================================
+Vizardry Magic                                               *Vizardry-Magic* ~
+
+Vizardry Magic is a simple way to handle plugin specific configurations files,
+these files will be Banished, Unbanished and Vanished with the bundle they
+belong to.
+
+                                                         *Vizardry-MagicConfig*
+By default, these files are stored in `bunde/vizardry/plugin/magic`, this path
+ensure that removing Vizardry will remove the magic files. As it is not
+always a good idea to keep modified files in a subdirectory of an existing
+bundle, this pas can be modified (and must be modified for submodule mode
+|Vizardry-submodule|). A good idea can be to keep them in `~/.vim/plugin/magic`:
+>
+    let g:VizardryMagicDir='~/.vim/plugin/magic'
+<
+
+                                                       *Vizardry-MagicCommands*
+
+:Magic <bundle> <command>                                              *:Magic*
+
+    Adds <command> to <bundle> magic file and execute it
+
+:MagicEdit <bundle>                                                *:MagicEdit*
+
+    Edit magic file for <bundle>
+
+:Magicsplit <bundle>                                              *:Magicsplit*
+
+    Edit magic file for <bundle>, splitting the current window
+
+:Magicvsplit <bundle>                                              *:Magicvsplit*
+
+    Edit magic file for <bundle>, vsplitting the current window
+
+:MagicCommit <file>                                              *:MagicCommit*
+
+    For submodule (see |Vizardry-submodule|) mode only: Commit the changes to
+    the given magic file.
+
+    Does nothing in clone mode
 
 ===============================================================================
 Spread the word                                             *Vizardry-spread* ~

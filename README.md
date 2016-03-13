@@ -35,16 +35,26 @@
         2. [Evolve from vim.org](#evolve-from-vim.org)
     7. [Vizardry](#vizardry-cmd)
     8. [Grimoire](#grimoire)
-5. [Spread the work](#spread-the-word)
+5. [Magic](#magic)
+    1. [Configuration](#magic-configuration)
+    2. [Commands](#magic-commands)
+        1. [:Magic](#magic-cmd)
+        2. [:MagicEdit](#magicedit)
+        3. [:Magicsplit](#magicsplit)
+        4. [:Magicvsplit](#magicvsplit)
+        5. [:MagicCommit](#magiccommit)
+6. [Spread the work](#spread-the-word)
 
 ## Release notes
 
-Current Version: 2.0b1
+Current Version: 2.0b3
 
-*   v2.0b1 comes with the possibility to search plugins from (virtually) any
+*   v2.0 comes with the possibility to search plugins from (virtually) any
     providers (github, bitbuckets,gitlab), see [Grimoire](#grimoire). It also
     provide a major refactor, several minor bug fix, and remove dependencies
     to external commands (`sed`, `grep` etc.).
+    It also re enables `:Magic` family commands with support for submodule
+    mode, see [Magic](#magic)).
     **Important informations**: Helps and Readme are not read from stdin anymore
     but from temporary file thus the Reader syntax have changed see:
     [here](#display-readme-on-evolve).
@@ -328,6 +338,60 @@ It is also possible to set the default grimoire in your vimrc
 
 **Help wanted:** currently only github is available, but it is very easy to
 add a new Grimoire, see [issue#3](https://github.com/dbeniamine/vizardry/issues/3).
+
+# Magic
+
+Vizardry Magic is a simple way to handle plugin specific configurations files,
+these files will be Banished, Unbanished and Vanished with the bundle they
+belong to.
+
+## Magic Configuration
+
+By default, these files are stored in `bunde/vizardry/plugin/magic`, this path
+ensure that removing Vizardry will remove the magic files. As it is not always
+a good idea to keep modified files in a subdirectory of an existing bundle,
+this pas can be modified (and must be modified for submodule mode
+[Submodules](#how-to-use-vizardry-with-submodules)). A good idea can be to
+keep them in `~/.vim/plugin/magic`:
+
+    let g:VizardryMagicDir='~/.vim/plugin/magic'
+
+
+## Magic Commands
+
+### <a name="magic-cmd">:Magic</a>
+
+    :Magic <bundle> <command>
+
+
+Adds &lt;command&gt; to &lt;bundle&gt; magic file and execute it.
+
+### :MagicEdit
+
+    :MagicEdit <bundle>
+
+Edits magic file for &lt;bundle&gt;.
+
+### :Magicsplit
+
+    :Magicsplit <bundle>
+
+Edits magic file for &lt;bundle&gt;, spliting the current window.
+
+### :Magicvsplit
+
+    :Magicvsplit <bundle>
+
+Edits magic file for &lt;bundle&gt;, vspliting the current window.
+
+### :MagicCommit
+
+    :MagicCommit <file>
+
+For submodule (see [Submodules](#how-to-use-vizardry-with-submodules)) mode
+only: Commit the changes to the given magic file.
+
+Does nothing in clone mode
 
 # Spread the word
 
