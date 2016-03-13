@@ -44,7 +44,7 @@ elseif (g:VizardryGitMethod !="clone")
           \'Banish': "[Vizardry] Banished vim submodule:",
           \'Vanish': "[Vizardry] Vanished vim submodule:",
           \'Evolve': "[Vizardry] Evolved vim submodule:",
-          \'Magic':  "[Vizardry] Upadated Magic file:",
+          \'Magic':  "[Vizardry] Updated Magic file:",
           \}
   endif
   " Git root directory for submodules
