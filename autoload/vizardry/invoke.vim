@@ -31,7 +31,9 @@ if !exists("g:VizardryDefaultGrimoire")
 endif
 
 " Initialize grimoires
-call vizardry#grimoire#SetGrimoire(g:VizardryDefaultGrimoire)
+if !exists("g:VizardryHandleQuery")
+  call vizardry#grimoire#SetGrimoire(g:VizardryDefaultGrimoire)
+endif
 
 " Number of results displayed by Scry
 if !exists("g:VizardryNbScryResults")
@@ -180,6 +182,12 @@ function! vizardry#invoke#Invoke(input)
   endif
 
   if a:input =~ '^\d\+$'
+    " No previous Scry
+    if !exists("g:vizardry#lastScry")
+      call vizardry#echo("':Invoke ".a:input."' does not make sense without ".
+            \"a previous call to :Scry","e")
+      return
+    endif
     let inputNumber = str2nr(a:input)
     " Input is a number search from previous search results
     if exists("s:siteList") && inputNumber < len(s:siteList)
