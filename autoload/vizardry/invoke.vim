@@ -136,17 +136,34 @@ endfunction
 
 " Query provider {{{2
 
+" Remove 'a:args option' from query
+" Returns a list:
+"   First element is the new query
+"   Second is the option
+function! vizardry#invoke#ExtractArgsFromQuery(input, args)
+  if a:input =~ a:args
+    let value =substitute(a:input, '.*'.a:args.'\s\s*\(\S*\).*','\1','')
+    let query=substitute(substitute(a:input, a:args.'\s\s*\S*','',''),
+        \'^\s*\(\S.*\S\)\s*$','\1','')
+    return [query,value]
+  endif
+  return [a:input,""]
+endfunction
+
 " Format query to github API
 function! vizardry#invoke#FormatQuery(input)
-  let user=substitute(a:input, '.*-u\s\s*\(\S*\).*','\1','')
-  let l:input=substitute(substitute(a:input, '-u\s\s*\S*','',''),
-        \'^\s\s*','','')
-  let g:vizardry#lastScry = substitute(l:input, '\s\s*', '', 'g')
-  let lastScryPlus = substitute(l:input, '\s\s*', '+', 'g')
+  " Parse Vizardry arguments
+  let [query,user]=vizardry#invoke#ExtractArgsFromQuery(a:input,'-u')
+  let [query,grimoire]=vizardry#invoke#ExtractArgsFromQuery(query,'-g')
+  "remove spaces
+  let s:lastScry = substitute(query, '\s\s*', '', 'g')
+  let lastScryPlus = substitute(query, '\s\s*', '+', 'g')
   let query=lastScryPlus
-  if match(a:input, '-u') != -1
-    let query=substitute(query,'+$','','') "Remove useless '+' if no keyword
+  if user!=""
     let query.='+user:'.user
+  endif
+  if grimoire!=""
+    call vizardry#grimoire#SetGrimoire(grimoire,0)
   endif
   call vizardry#echo("Searching for ".query."...",'s')
   let query.='+vim+'.g:VizardrySearchOptions
@@ -180,7 +197,7 @@ function! vizardry#invoke#Invoke(input)
 
   if a:input =~ '^\d\+$'
     " No previous Scry
-    if !exists("g:vizardry#lastScry")
+    if !exists("s:lastScry")
       call vizardry#echo("':Invoke ".a:input."' does not make sense without ".
             \"a previous call to :Scry","e")
       return
@@ -191,8 +208,8 @@ function! vizardry#invoke#Invoke(input)
           \|| a:input=="0"
       let l:index=inputNumber
       call vizardry#echo("Index ".inputNumber.' from scry search for "'.
-            \g:vizardry#lastScry.'":','s')
-      let inputNice = g:vizardry#lastScry
+            \s:lastScry.'":','s')
+      let inputNice = s:lastScry
     else
       if !exists("s:siteList")
         call vizardry#echo("Invalid command :'Invoke ".a:input.

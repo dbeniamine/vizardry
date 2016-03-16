@@ -42,9 +42,8 @@ function! vizardry#bitbucket#CloneUrl(repo)
   let ans=join(vizardry#remote#GetURL(s:APIUrl.'/'.a:repo), ' ')
   let scm=substitute(ans,'.*"scm": "\([^"]*\)".*','\1','')
   if scm != "git"
-    "TODO clone hg
     call vizardry#echo("This bundle is not versioned under git, clone won't work",
-          \"e")
+          \"w")
     return ""
   endif
   return s:baseURL.a:repo
@@ -108,8 +107,15 @@ endfunction
 "       + site: the site name e.g: dbeniamine/vizardry
 "       + description: the description
 function! vizardry#bitbucket#FormatQuery(input)
-  return substitute(substitute(a:input,'user:\(\S*\)','\1\/', ''),
-        \'[^+]*:[^+]*','','g')
+  " Handle users
+  let query=substitute(a:input,'user:\([^+]*\)','\1\/', '')
+  " Handle language
+  let language=substitute(query,'.*language:\([^+]*\).*','\&language=\1', '')
+  " Ignore every other fields
+  let query=substitute(substitute(query,'[^+]*:[^+]*','','g'),'^+*\([^+].*[^+]\)+*$','\1','')
+  " Append language options
+  let query.=tolower(l:language)
+  return query
 endfunction
 
 function! vizardry#bitbucket#HandleQuery(input)

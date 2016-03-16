@@ -157,7 +157,7 @@ or `:Vanish` if it contains some bad modifications.
 `:Scry [<query>]`
 
 + If no <query> is given, list all invoked and banished plugins.
-+ If a <query> is specified (see below), search github for a script matching
++ If a <query> is specified (see below), search for a script matching
 <query> in title or readme and list N first results.  After the search, ̀`Scry`
 will prompt you to `Invoke` a script, hit `q` to exit, or a number to `Invoke`
 the corresponding script.
@@ -175,11 +175,15 @@ Default is 10.
 
 A `<query>` can be:
 
-+ One or several `<keywords>`
++ One or several keywords
 + A query matching the github [search
 api](https://developer.github.com/v3/search/#search-repositories)
-+ `-u <user>` (search every repositories of `<user>` matching 'vim'
-+ One or several `<keywords>` and `-u <user>` (in any order)
++ A mix of keywords and github search fields
+
+Additionally, Vizardry adds the following parameters that can be used alone or
+in combination with a query
+    + `-u <user>` (search every repositories of <user> matching 'vim')
+    + `-q <grimoire>` to search on a different grimoire
 
 #### Search options
 
@@ -336,8 +340,16 @@ It is also possible to set the default grimoire in your vimrc
 
     let g:VizardryDefaultGrimoire='github'
 
-**Help wanted:** currently only github and bitbucket are available, but it is very easy to
-add a new Grimoire, see [issue#3](https://github.com/dbeniamine/vizardry/issues/3).
+**Note:**
+
+Bitbucket does not allow to do any filters while searching for public
+repository, thus every github parameters (such as `fork:true`) but `user:name`
+and `language:lang` are ignored, when using Bitbucket grimoire. For the same
+reason, Bitbuckets queries does not respect `g:VizardryNbScryResults`.
+
+**Help wanted:** currently only github and bitbucket are available, but it is
+very easy to add a new Grimoire, see
+[issue#3](https://github.com/dbeniamine/vizardry/issues/3).
 
 # Magic
 
