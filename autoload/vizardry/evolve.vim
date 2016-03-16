@@ -64,7 +64,7 @@ function s:GitEvolve(path, branch)
           let l:doctype='Help'
         endif
         call vizardry#remote#DisplayDoc(site,g:VizardryReadmeHelpFallback,
-              l:doctype)
+              \l:doctype)
       elseif response ==? 'l'
         call vizardry#git#Log(a:path)
       elseif response ==? 'c'
