@@ -88,6 +88,7 @@ Vizardry files are organized as follow:
    autoload/vizardry/grimoire.vim   " Grimoires definition and generic
                                     " grimoire helpers
    autoload/vizardry/github.vim     " Github grimoire
+   autoload/vizardry/bitbucket.vim  " Bitbucket grimoire
 <
 
 ===============================================================================
@@ -235,6 +236,19 @@ To add a grimoire (provider):
 
 [1] https://api.github.com/search/repositories?q=user:dbeniamine+vim+fork:true+sort:stars
 
+The following helpers function are available to write grimoires code:
+
+>
+    " Extract site from origin if origin looks like
+    " .*baseurl.site[.git]
+    " for instance https://github.com/dbeniamine/vizardry.git, github.com
+    " will return dbeniamine/vizardry.git
+    function! vizardry#grimoire#SiteFromOrigin(origin,baseurl)
+
+    " Returns a list of possible matches for documentation names for repo a:repo
+    " sorted by pertinence
+    function! vizardry#grimoire#GetDocNames(repo)
+<
 ===============================================================================
 Version Control Systems                                    *Vizardry-Dev-vcs* ~
 

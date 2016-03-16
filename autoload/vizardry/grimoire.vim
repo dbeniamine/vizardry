@@ -24,6 +24,12 @@ endif
 let g:save_cpo = &cpo
 set cpo&vim
 
+if !exists("g:VizardryDefaultGrimoire")
+  let g:VizardryDefaultGrimoire='github'
+endif
+
+let s:currentGrimoire=g:VizardryDefaultGrimoire
+
 " To add a grimoire (provider):
 "  + create a file autoload/vizardry/mygrimoire.vim which implement each of
 "   the function described below:
@@ -47,21 +53,36 @@ set cpo&vim
 "  + Update the documentation to add the grimoire and the search api
 "  + Please test before creating a pull request
 
-let s:VizardryAvailableGrimoires = ['github']
+let s:VizardryAvailableGrimoires = ['github', 'bitbucket']
+
+function! vizardry#grimoire#ListGrimoires(A,L,P)
+  return join(s:VizardryAvailableGrimoires,"\n")
+endfunction
 
 " Vizardry grimoires API {{{1
-function! vizardry#grimoire#SetGrimoire(grimoire)
-  let l:grimoire=a:grimoire
-  while(match(s:VizardryAvailableGrimoires, '\<'.l:grimoire.'\>') < 0)
-    call vizardry#echo("Unknown grimoire '".a:grimoire."'",'e')
-    let l:grimoire=vizardry#doPrompt('Please select a grimoire',
-          \s:VizardryAvailableGrimoires,1)
-  endwhile
+function! vizardry#grimoire#SetGrimoire(grimoire,silent)
+  let l:grimoire=s:currentGrimoire
+  if a:silent==0
+    " Verbose mode
+    if a:grimoire==""
+      call vizardry#echo('Available grimoires: ['.join(s:VizardryAvailableGrimoires,
+          \',').']', 'n')
+    else
+      let l:grimoire=a:grimoire
+      while(match(s:VizardryAvailableGrimoires, '\<'.l:grimoire.'\>') < 0)
+        call vizardry#echo("Unknown grimoire '".a:grimoire."'",'e')
+        let l:grimoire=vizardry#doPrompt('Please select a grimoire',
+              \s:VizardryAvailableGrimoires,1)
+      endwhile
+    endif
+    call vizardry#echo("Current Grimoire : ".l:grimoire, "s")
+  endif
   let g:VizardryCloneUrl=function('vizardry#'.l:grimoire.'#CloneUrl')
   let g:VizardryReadmeUrl=function('vizardry#'.l:grimoire.'#ReadmeUrl')
   let g:VizardryHelpUrl=function('vizardry#'.l:grimoire.'#HelpUrl')
   let g:VizardrySiteFromOrigin=function('vizardry#'.l:grimoire.'#SiteFromOrigin')
   let g:VizardryHandleQuery=function('vizardry#'.l:grimoire.'#HandleQuery')
+  let s:currentGrimoire=l:grimoire
 endfunction
 
 " Vizardry grimoire generic helper {{{1
@@ -82,6 +103,16 @@ function! vizardry#grimoire#SiteFromOrigin(origin,baseurl)
   let l:site=substitute(a:origin,'origin\s*\(\S*\).*','\1','')
   let l:site=substitute(l:site,'.*'.a:baseurl.'[:/]\(.*\)','\1','')
   return substitute(site,'\(.*\).git$','\1','')
+endfunction
+
+" Returns a list of possible matches for documentation names for repo a:repo
+" sorted by pertinence
+function! vizardry#grimoire#GetDocNames(repo)
+  let name=vizardry#GetRepoName(a:repo)
+  " Look for a help matching the exact name then ony the last word of the
+  " name, finally or any .txt file in doc directory
+  return [name.'.txt',substitute(name,'.*\A\(\a*\)\A*.*','\1.*.txt',''),
+        \".*.txt"]
 endfunction
 
 let cpo=save_cpo

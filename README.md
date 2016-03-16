@@ -47,7 +47,7 @@
 
 ## Release notes
 
-Current Version: 2.0b3
+Current Version: 2.0b4
 
 *   v2.0 comes with the possibility to search plugins from (virtually) any
     providers (github, bitbuckets,gitlab), see [Grimoire](#grimoire). It also
@@ -326,17 +326,17 @@ Show a basic usage and Vizardry version.
 
 ### Grimoire
 
-    :Grimoire <provider>
+    :Grimoire [provider]
 
-Select the `Grimoire` from which you want to `Scry` and `Invoke` bundles. A
-grimoire is a website from which you can search for bundles such as github or
-bitbucked.
+List Grimoires or select the `Grimoire` from which you want to `Scry` and
+`Invoke` bundles. A grimoire is a website from which you can search for
+bundles such as github or bitbucket.
 
 It is also possible to set the default grimoire in your vimrc
 
     let g:VizardryDefaultGrimoire='github'
 
-**Help wanted:** currently only github is available, but it is very easy to
+**Help wanted:** currently only github and bitbucket are available, but it is very easy to
 add a new Grimoire, see [issue#3](https://github.com/dbeniamine/vizardry/issues/3).
 
 # Magic

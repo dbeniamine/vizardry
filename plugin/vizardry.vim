@@ -24,7 +24,7 @@ endif
 let g:save_cpo = &cpo
 set cpo&vim
 
-let g:loaded_vizardry = "v2.0b3"
+let g:loaded_vizardry = "v2.0b4"
 
 " Plugin Settings {{{1
 
@@ -61,7 +61,7 @@ endif
 command! -nargs=0 Vizardry call vizardry#usage()
 " :Grimoire (choose / list bundle providers)
 command! -nargs=? -complete=custom,vizardry#grimoire#ListGrimoires Grimoire
-      \ call vizardry#grimoire#SetGrimoire(<q-args>)
+      \ call vizardry#grimoire#SetGrimoire(<q-args>,'0')
 " :Invoke (install / reload bundles)
 command! -nargs=? Invoke call vizardry#invoke#Invoke(<q-args>)
 " :Banish (disable a bundle)

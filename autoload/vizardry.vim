@@ -58,7 +58,7 @@ endfunction
 "   e for error
 "   w for warning
 "   q for asking a question
-"   s to tell the user Vizardry is searching somethin
+"   s to tell the user Vizardry is doing something (searching for instance)
 "   D to print only in debug mode
 " If extra argument is >0, then return the user answer
 function! vizardry#echo(msg,type,...)

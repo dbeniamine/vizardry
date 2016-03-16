@@ -26,13 +26,10 @@ let g:save_cpo = &cpo
 set cpo&vim
 
 " Settings {{{1
-if !exists("g:VizardryDefaultGrimoire")
-  let g:VizardryDefaultGrimoire='github'
-endif
 
 " Initialize grimoires
 if !exists("g:VizardryHandleQuery")
-  call vizardry#grimoire#SetGrimoire(g:VizardryDefaultGrimoire)
+  call vizardry#grimoire#SetGrimoire('',1)
 endif
 
 " Number of results displayed by Scry

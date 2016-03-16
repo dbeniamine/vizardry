@@ -46,10 +46,7 @@ endfunction
 function! vizardry#github#HelpUrl(repo)
   let answers=vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/contents/doc')
   let found=0
-  " Look for a help matching the exact name then ony the last word of the
-  " name, finally or any .txt file in doc directory
-  let name=vizardry#GetRepoName(a:repo)
-  let docnames=[name.'.txt',substitute(name,'.*\A\(\a*\)\A*.*','\1.*.txt',''),
+  let docnames=vizardry#grimoire#GetDocNames(a:repo)
         \".*.txt"]
   for doc in docnames
     for ans in answers
