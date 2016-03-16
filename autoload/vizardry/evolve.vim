@@ -36,11 +36,15 @@ function s:GitEvolve(path, branch)
   let curbranch=vizardry#git#GetCurrentBranch(a:path)
   let commitreq=0
   " Specific branch required ?
-  if a:branch != "" && curbranch != a:branch
-    call vizardry#git#CheckoutBranch(a:path,a:branch)
+  if (curbranch =~ 'detached' || (a:branch != "" && curbranch != a:branch))
+    if a:branch == ""
+      let curbranch="master"
+    else
+      let curbranch=a:branch
+    endif
+    call vizardry#git#CheckoutBranch(a:path,curbranch)
     " Force commiting
     let commitreq=1
-    let curbranch=a:branch
   endif
   " Do upgrade
   let l:ret=vizardry#git#Upgrade(a:path,curbranch)
