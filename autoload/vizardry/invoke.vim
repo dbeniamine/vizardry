@@ -118,11 +118,9 @@ function! vizardry#invoke#handleInvokation(site, description, inputNice, index)
       let ret=a:index+1
       let valid = 1
     elseif response ==? 'd'
-      call vizardry#remote#DisplayDoc(a:site,g:VizardryReadmeHelpFallback,
-            \'Readme')
+      call vizardry#remote#DisplayDoc(a:site,1,'Readme')
     elseif response ==? 'h'
-      call vizardry#remote#DisplayDoc(a:site,g:VizardryReadmeHelpFallback,
-            \'Help')
+      call vizardry#remote#DisplayDoc(a:site,1,'Help')
     elseif response ==? 'a'
       let valid=1
     elseif response ==? 'p'

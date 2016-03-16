@@ -96,7 +96,7 @@ endfunction
 
 " Return the repo name from the origin url
 function vizardry#bitbucket#SiteFromOrigin(path)
-  return vizardry#grimoire#SiteFromOrigin(a:path,
+  return vizardry#grimoire#SiteFromOriginHelper(a:path,
         \substitute(s:baseURL,'.*/\([^/]*\)/$','\1',''))
 endfunction
 

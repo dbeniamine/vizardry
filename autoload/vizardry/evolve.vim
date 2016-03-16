@@ -57,14 +57,13 @@ function s:GitEvolve(path, branch)
       let response=vizardry#doPrompt(name.' Evolved, show Readme, Log or Continue ?',
             \['r','l','c', 'h'],1)
       if response ==? 'r' || response ==? 'h'
-        let l:site=g:VizardrySiteFromOrigin(vizardry#git#GetOrigin(a:path))
+        let l:site=vizardry#grimoire#SiteFromOrigin(vizardry#git#GetOrigin(a:path))
         if response ==? 'r'
           let l:doctype='Readme'
         else
           let l:doctype='Help'
         endif
-        call vizardry#remote#DisplayDoc(site,g:VizardryReadmeHelpFallback,
-              \l:doctype)
+        call vizardry#remote#DisplayDoc(site,1,l:doctype)
       elseif response ==? 'l'
         call vizardry#git#Log(a:path)
       elseif response ==? 'c'
@@ -88,6 +87,7 @@ endfunction
 
 " Upgrade one or every plugins
 function! vizardry#evolve#Evolve(input, rec)
+  let oldgrim=vizardry#grimoire#GetCurrentGrimoire()
   if a:input==""
     " Try evolve every plugins
     let invokedList = vizardry#ListInvoked('*')
@@ -114,6 +114,9 @@ function! vizardry#evolve#Evolve(input, rec)
     else
       let l:files=s:VimOrgEvolve(g:vizardry#bundleDir.'/'.inputNice)
     endif
+  endif
+  if oldgrim !=  vizardry#grimoire#GetCurrentGrimoire()
+    call vizardry#grimoire#SetGrimoire(oldgrim, 1)
   endif
   let l:files=substitute(l:files,'^\s*$','','')
   if a:rec==0

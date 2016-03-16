@@ -88,7 +88,7 @@ function! vizardry#remote#DisplayDoc(site,fallback,type)
   " Fallback
   if fourofour != ""
     call vizardry#echo('No '.a:type.' found', "e")
-    if a:fallback == 1
+    if a:fallback == 1 && g:VizardryReadmeHelpFallback == 1
       call vizardry#remote#DisplayDoc(a:site,0,l:otype)
     endif
   else

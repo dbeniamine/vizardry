@@ -80,9 +80,12 @@ function! vizardry#grimoire#SetGrimoire(grimoire,silent)
   let g:VizardryCloneUrl=function('vizardry#'.l:grimoire.'#CloneUrl')
   let g:VizardryReadmeUrl=function('vizardry#'.l:grimoire.'#ReadmeUrl')
   let g:VizardryHelpUrl=function('vizardry#'.l:grimoire.'#HelpUrl')
-  let g:VizardrySiteFromOrigin=function('vizardry#'.l:grimoire.'#SiteFromOrigin')
   let g:VizardryHandleQuery=function('vizardry#'.l:grimoire.'#HandleQuery')
   let s:currentGrimoire=l:grimoire
+endfunction
+
+function! vizardry#grimoire#GetCurrentGrimoire()
+  return s:currentGrimoire
 endfunction
 
 " Vizardry grimoire generic helper {{{1
@@ -95,11 +98,30 @@ function! vizardry#grimoire#HelpUrl(baseurl,name)
   return a:baseurl.'/master/doc/'.a:name.'.txt'
 endfunction
 
+" Returns the grimoire corresponding to url
+" Side effect: change the grimoire
+function! vizardry#grimoire#GrimoireFromOrigin(url)
+  for g in s:VizardryAvailableGrimoires
+    if a:url =~ g
+      call vizardry#grimoire#SetGrimoire(g,1)
+      return g
+    endif
+  endfor
+  return ""
+endfunction
+
+" Return the site from url
+" Side effect: change the grimoire
+function! vizardry#grimoire#SiteFromOrigin(url)
+  let grimoire=vizardry#grimoire#GrimoireFromOrigin(a:url)
+  return function('vizardry#'.grimoire.'#SiteFromOrigin')(a:url)
+endfunction
+
 " Extract site from origin if origin looks like
 " .*baseurl.site[.git]
 " for instance https://github.com/dbeniamine/vizardry.git, github.com
 " will return dbeniamine/vizardry.git
-function! vizardry#grimoire#SiteFromOrigin(origin,baseurl)
+function! vizardry#grimoire#SiteFromOriginHelper(origin,baseurl)
   let l:site=substitute(a:origin,'origin\s*\(\S*\).*','\1','')
   let l:site=substitute(l:site,'.*'.a:baseurl.'[:/]\(.*\)','\1','')
   return substitute(site,'\(.*\).git$','\1','')

@@ -243,7 +243,7 @@ The following helpers function are available to write grimoires code:
     " .*baseurl.site[.git]
     " for instance https://github.com/dbeniamine/vizardry.git, github.com
     " will return dbeniamine/vizardry.git
-    function! vizardry#grimoire#SiteFromOrigin(origin,baseurl)
+    function! vizardry#grimoire#SiteFromOriginHelper(origin,baseurl)
 
     " Returns a list of possible matches for documentation names for repo a:repo
     " sorted by pertinence
