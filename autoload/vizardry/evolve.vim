@@ -36,12 +36,12 @@ function s:GitEvolve(path, branch)
   let curbranch=vizardry#git#GetCurrentBranch(a:path)
   let commitreq=0
   " Specific branch required ?
-  if curbranch != a:branch
+  if a:branch != "" && curbranch != a:branch
     call vizardry#git#CheckoutBranch(a:path,a:branch)
     " Force commiting
     let commitreq=1
+    let curbranch=a:branch
   endif
-  let curbranch=a:branch
   " Do upgrade
   let l:ret=vizardry#git#Upgrade(a:path,curbranch)
   call vizardry#echo(l:ret,'')
@@ -102,7 +102,7 @@ function! vizardry#evolve#Evolve(input, rec)
     if len(inarray) >= 2
       let branch=inarray[1]
     else
-      let branch="master"
+      let branch=""
     endif
     let exists = vizardry#testBundle(inputNice)
     if !exists
