@@ -67,11 +67,11 @@ endfunction
 function! vizardry#remote#DisplayDoc(site,fallback,type)
   " Prepare functions
   if a:type=='Readme'
-    let l:Fun=g:VizardryReadmeUrl
+    let l:Fun=function('vizardry#grimoire#ReadmeUrl')
     let l:reader=g:VizardryReadmeReader
     let l:otype='Help'
   else
-    let l:Fun=g:VizardryHelpUrl
+    let l:Fun=function('vizardry#grimoire#HelpUrl')
     let l:reader=g:VizardryHelpReader
     let l:otype='Readme'
   endif

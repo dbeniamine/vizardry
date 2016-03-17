@@ -27,11 +27,6 @@ set cpo&vim
 
 " Settings {{{1
 
-" Initialize grimoires
-if !exists("g:VizardryHandleQuery")
-  call vizardry#grimoire#SetGrimoire('',1)
-endif
-
 " Number of results displayed by Scry
 if !exists("g:VizardryNbScryResults")
   let g:VizardryNbScryResults=10
@@ -50,7 +45,7 @@ function! vizardry#invoke#grabRepo(site, name)
   let l:path=vizardry#git#PathToBundleAsList(a:name)
   let l:commitPath=l:path[1]
   let l:cmd=':!cd '.l:path[0].' && '
-  let l:url=g:VizardryCloneUrl(a:site)
+  let l:url=vizardry#grimoire#CloneUrl(a:site)
   let l:cmd.=vizardry#git#CloneCmd(l:url,l:path[1]).' && '.
         \vizardry#git#CommitCmd(l:path[0],l:commitPath,l:path[1],'Invoke')
   execute l:cmd
@@ -61,7 +56,7 @@ function! vizardry#invoke#testRepo(repository)
   redraw
   let name=vizardry#GetRepoName(a:repository)
   let bundleList = vizardry#ListInvoked(name) + vizardry#ListBanished(name)
-  let origin=vizardry#git#RemoveProto(g:VizardryCloneUrl(a:repository))
+  let origin=vizardry#git#RemoveProto(vizardry#grimoire#CloneUrl(a:repository))
   for bundle in bundleList
     if origin == vizardry#git#RemoveProto(vizardry#git#GetOrigin(
           \g:vizardry#bundleDir.'/'.bundle))
@@ -173,7 +168,7 @@ function! vizardry#invoke#InitLists(input)
   let query=vizardry#invoke#FormatQuery(a:input)
   call vizardry#echo("(actual query: '".query."')",'')
   " Do query
-  let s:siteList=g:VizardryHandleQuery(l:query)
+  let s:siteList=vizardry#grimoire#HandleQuery(l:query)
   call  vizardry#echo(s:siteList,'D' )
   let ret=len(s:siteList)
   if ret == 0

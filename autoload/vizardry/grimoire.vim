@@ -24,11 +24,16 @@ endif
 let g:save_cpo = &cpo
 set cpo&vim
 
+" Initialization {{{1
+
 if !exists("g:VizardryDefaultGrimoire")
   let g:VizardryDefaultGrimoire='github'
 endif
 
 let s:currentGrimoire=g:VizardryDefaultGrimoire
+
+
+" Vizardry grimoires API {{{1
 
 " To add a grimoire (provider):
 "  + create a file autoload/vizardry/mygrimoire.vim which implement each of
@@ -55,11 +60,12 @@ let s:currentGrimoire=g:VizardryDefaultGrimoire
 
 let s:VizardryAvailableGrimoires = ['github', 'bitbucket']
 
+" Grimoires command functions {{{2
+
 function! vizardry#grimoire#ListGrimoires(A,L,P)
   return join(s:VizardryAvailableGrimoires,"\n")
 endfunction
 
-" Vizardry grimoires API {{{1
 function! vizardry#grimoire#SetGrimoire(grimoire,silent)
   let l:grimoire=s:currentGrimoire
   if a:silent==0
@@ -77,11 +83,24 @@ function! vizardry#grimoire#SetGrimoire(grimoire,silent)
     endif
     call vizardry#echo("Current Grimoire : ".l:grimoire, "s")
   endif
-  let g:VizardryCloneUrl=function('vizardry#'.l:grimoire.'#CloneUrl')
-  let g:VizardryReadmeUrl=function('vizardry#'.l:grimoire.'#ReadmeUrl')
-  let g:VizardryHelpUrl=function('vizardry#'.l:grimoire.'#HelpUrl')
-  let g:VizardryHandleQuery=function('vizardry#'.l:grimoire.'#HandleQuery')
   let s:currentGrimoire=l:grimoire
+endfunction
+
+" Wrappers arround grimoire specific functions {{{2
+function! vizardry#grimoire#CloneUrl(site)
+  return function('vizardry#'.s:currentGrimoire.'#CloneUrl')(a:site)
+endfunction
+
+function! vizardry#grimoire#ReadmeUrl(site)
+  return function('vizardry#'.s:currentGrimoire.'#ReadmeUrl')(a:site)
+endfunction
+
+function! vizardry#grimoire#HelpUrl(site)
+  return function('vizardry#'.s:currentGrimoire.'#HelpUrl')(a:site)
+endfunction
+
+function! vizardry#grimoire#HandleQuery(query)
+  return function('vizardry#'.s:currentGrimoire.'#HandleQuery')(a:query)
 endfunction
 
 function! vizardry#grimoire#GetCurrentGrimoire()
@@ -91,12 +110,6 @@ endfunction
 " Vizardry grimoire generic helper {{{1
 " see autoload/vizardry/github.vim for usage example
 
-
-" Return the Help url admitting that baseurl is the url to the roots of the
-" plugin contents and name is the name of the bundle
-function! vizardry#grimoire#HelpUrl(baseurl,name)
-  return a:baseurl.'/master/doc/'.a:name.'.txt'
-endfunction
 
 " Returns the grimoire corresponding to url
 " Side effect: change the grimoire
