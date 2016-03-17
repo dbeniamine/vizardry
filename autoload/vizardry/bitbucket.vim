@@ -111,6 +111,9 @@ function! vizardry#bitbucket#FormatQuery(input)
   let query=substitute(a:input,'user:\([^+]*\)','\1\/', '')
   " Handle language
   let language=substitute(query,'.*language:\([^+]*\).*','\&language=\1', '')
+  if l:language == query
+    let language=""
+  endif
   " Ignore every other fields
   let query=substitute(substitute(query,'[^+]*:[^+]*','','g'),'^+*\([^+].*[^+]\)+*$','\1','')
   " Append language options
