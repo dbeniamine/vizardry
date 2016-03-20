@@ -47,14 +47,18 @@
 
 ## Release notes
 
-Current Version: 2.0b4
+Current Version: 2.0b5
 
-*   v2.0 comes with the possibility to search plugins from (virtually) any
-    providers (github, bitbuckets,gitlab), see [Grimoire](#grimoire). It also
-    provide a major refactor, several minor bug fix, and remove dependencies
-    to external commands (`sed`, `grep` etc.).
-    It also re enables `:Magic` family commands with support for submodule
+*   v2.0 comes with several improvements:
+    * Grimoires abstraction to install bundles from any provider (Grimoires 
+    currently available: github, bitbuckets, gitlab), see [Grimoire](#grimoire).
+    * Re enabling of `:Magic` family commands with support for submodule
     mode, see [Magic](#magic)).
+    * A major refactor including, several minor bug fix, and removing
+    dependencies to external commands (`sed`, `grep` etc.).
+    * A new documentation for developers to help Vizardry enthusiasts improve
+    it.
+
     **Important informations**: Helps and Readme are not read from stdin anymore
     but from temporary file thus the Reader syntax have changed see:
     [here](#display-readme-on-evolve).
@@ -74,7 +78,7 @@ In 2014, you can just type ":Invoke &lt;keyword&gt;" and Vizardry will automatic
 
 In 2015 you can even upgrade plugins from any git repo or vim.org using [:Evolve](#evolve).
 
-As each years seems to come with a new imrpovement, in 2016 you are not
+As each year seems to come with a new improvement, in 2016 you are not
 limited to github anymore it is possible to install plugins from bitbucket,
 gitlab or virtually any others, see [Grimoire](#grimoire).
 
@@ -85,6 +89,7 @@ This plugin is a fork from [Ardagnir original Vizardry
 plugin](https://github.com/ardagnir/Vizardry) which adds several pretty cool
 features including:
 
+* `Grimoire` abstraction to install bundle from any providers.
 + `Vanish` command to actually remove a plugin.
 + `Evolve` command to upgrade one or every plugins see [Evolve](#evolve).
 + Complete submodule handling for people having their vim config in a git repo
@@ -116,9 +121,23 @@ Use pathogen.
 
 ### License
 
-Vizardry is licensed under the AGPL v3
+Vizardry: A vim plugin manager for lazy people
+Copyright (C) 2015,2016 David Beniamine. All rights reserved.
+Copyright (C) 2013, James Kolb. All rights reserved.
 
-Author: David Beniamine
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 ## How to use Vizardry with submodules ?
 

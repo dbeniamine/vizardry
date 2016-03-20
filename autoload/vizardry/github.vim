@@ -1,7 +1,7 @@
 " Vim plugin for installing other vim plugins.
 " Maintainer: David Beniamine
 "
-" Copyright (C) 2015, David Beniamine. All rights reserved.
+" Copyright (C) 2015,2016, David Beniamine. All rights reserved.
 " Copyright (C) 2013, James Kolb. All rights reserved.
 "
 " This program is free software: you can redistribute it and/or modify
