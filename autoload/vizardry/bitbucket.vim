@@ -79,7 +79,6 @@ function! vizardry#bitbucket#HelpUrl(repo)
   let id=0
   let docnames=vizardry#grimoire#GetDocNames(a:repo)
   for doc in docnames
-    echo doc
     while 1
       let id=match(links,'/doc/.*\.txt',id+1)
       if id < 0

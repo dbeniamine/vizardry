@@ -85,6 +85,11 @@ automatically search github for the plugin you want and install it for you.
 In 2015 you can even upgrade plugins from any git repo or vim.org using
 |:Evolve| |Vizardry-Upgrade|.
 
+As each years seems to come with a new imrpovement, in 2016 you are not
+limited to github anymore it is possible to install plugins from bitbucket or
+virtually any others, see |:Grimoire|.
+
+
 Why this fork ?                                                 *Vizardry-fork*
 
     This plugin is a fork from Ardagnir original Vizardry plugin
@@ -323,7 +328,7 @@ Note:~
 
     To install plugin found at vim.org from github use:
 >
-        :Invoke -u vim-scripts <plugin-name>
+        :Invoke -u vim-scripts <plugin-name> -g github
 <
     Were `<plugin-name>` is the actual name of the plugin at vim.org
 

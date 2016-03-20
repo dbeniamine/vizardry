@@ -76,7 +76,7 @@ In 2015 you can even upgrade plugins from any git repo or vim.org using [:Evolve
 
 As each years seems to come with a new imrpovement, in 2016 you are not
 limited to github anymore it is possible to install plugins from bitbucket or
-virtually any others, see [Grimoire](#grimoire)
+virtually any others, see [Grimoire](#grimoire).
 
 
 ### Why this fork ?
