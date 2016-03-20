@@ -1,4 +1,4 @@
-(A) +Grimoires gitlabs grimoire
+(A) +Grimoires Check usage of 'master'
 (B) +pathogen Reload autoloaded file see pathogen / scriptease
 x 2016-03-05 (A) +Grimoires Issue / call for pull request
 x 2016-03-06 (A) +Grimoires Documentation
@@ -7,5 +7,7 @@ x 2016-03-09 (A) +General refactor small untis autoload
 x 2016-03-09 (B) +cvs Documentation cvs abstraction, call for pull request
 x 2016-03-17 (A) +Grimoires bitbucket grimoire
 x 2016-03-17 (B) +Grimoires Documentation: Limit references to github
+x 2016-03-20 (A) +Grimoires Isntance url doc for gitlab / bitbucket
+x 2016-03-20 (A) +Grimoires gitlabs grimoire
 x 2016-03-20 (A) +Magic TEST banish,unbanish,vanish clone mode
 x 2016-03-20 Cancelled (B) +Grimoires Per grimoire documentation

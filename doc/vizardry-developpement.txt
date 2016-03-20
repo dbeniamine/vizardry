@@ -89,6 +89,7 @@ Vizardry files are organized as follow:
                                     " grimoire helpers
    autoload/vizardry/github.vim     " Github grimoire
    autoload/vizardry/bitbucket.vim  " Bitbucket grimoire
+   autoload/vizardry/gitlab.vim     " Gitlab grimoire
 <
 
 ===============================================================================

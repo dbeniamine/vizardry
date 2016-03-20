@@ -58,7 +58,7 @@ let s:currentGrimoire=g:VizardryDefaultGrimoire
 "  + Update the documentation to add the grimoire and the search api
 "  + Please test before creating a pull request
 
-let s:VizardryAvailableGrimoires = ['github', 'bitbucket']
+let s:VizardryAvailableGrimoires = ['github', 'bitbucket', 'gitlab']
 
 " Grimoires command functions {{{2
 

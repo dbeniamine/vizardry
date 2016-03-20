@@ -354,16 +354,26 @@ It is also possible to set the default grimoire in your vimrc
 
     let g:VizardryDefaultGrimoire='github'
 
+For Bitbucket and gitlab, an instance url can be supplied, here are the
+defaults:
+>
+    let g:VizardryGitlabInstanceUrl='gitlab.com'
+    let g:VizardryBitbucketInstanceUrl='bitbucket.org'
+<
+
 Note:
 
-Bitbucket does not allow to do any filters while searching for public
++ Bitbucket does not allow to do any filters while searching for public
 repository, thus every github parameters (such as `fork:true`) but `user:name`
 and `language:lang` are ignored, when using Bitbucket grimoire. For the same
 reason, Bitbuckets queries does not respect `g:VizardryNbScryResults`.
++ Gitlab API is even worse, neither `user` nor ̀`language` or any other github
+search options works.
 
 Help wanted:~
-Currently only github and bitbucket are available, but it is very easy to add
-a new Grimoire, see https://github.com/dbeniamine/vizardry/issues/3.
+Currently only github bitbucket and gitlab are available, but it is very easy
+to add a new Grimoire, see https://github.com/dbeniamine/vizardry/issues/3 and
+|Vizardry-Dev-grimoires|.
 
 
 ===============================================================================

@@ -75,8 +75,8 @@ In 2014, you can just type ":Invoke &lt;keyword&gt;" and Vizardry will automatic
 In 2015 you can even upgrade plugins from any git repo or vim.org using [:Evolve](#evolve).
 
 As each years seems to come with a new imrpovement, in 2016 you are not
-limited to github anymore it is possible to install plugins from bitbucket or
-virtually any others, see [Grimoire](#grimoire).
+limited to github anymore it is possible to install plugins from bitbucket,
+gitlab or virtually any others, see [Grimoire](#grimoire).
 
 
 ### Why this fork ?
@@ -340,16 +340,26 @@ It is also possible to set the default grimoire in your vimrc
 
     let g:VizardryDefaultGrimoire='github'
 
+For Bitbucket and gitlab, an instance url can be supplied, here are the
+defaults:
+
+    let g:VizardryGitlabInstanceUrl='gitlab.com'
+    let g:VizardryBitbucketInstanceUrl='bitbucket.org'
+
 **Note:**
 
-Bitbucket does not allow to do any filters while searching for public
+*   Bitbucket does not allow to do any filters while searching for public
 repository, thus every github parameters (such as `fork:true`) but `user:name`
 and `language:lang` are ignored, when using Bitbucket grimoire. For the same
 reason, Bitbuckets queries does not respect `g:VizardryNbScryResults`.
+*   Gitlab API is even worse, neither `user` nor ̀`language` or any other github
+search options works.
+
 
 **Help wanted:** currently only github and bitbucket are available, but it is
 very easy to add a new Grimoire, see
-[issue#3](https://github.com/dbeniamine/vizardry/issues/3).
+[issue#3](https://github.com/dbeniamine/vizardry/issues/3) and `:help
+Vizardry-Dev-grimoires`.
 
 # Magic
 
