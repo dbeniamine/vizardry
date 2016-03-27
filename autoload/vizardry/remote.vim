@@ -64,7 +64,7 @@ endfunction
 " Display documentation for site
 " If fallback == 1 Display the other type is the requested type is not found
 " type MUST be 'Readme' or 'Help'
-function! vizardry#remote#DisplayDoc(site,fallback,type)
+function! vizardry#remote#DisplayDoc(site,fallback,type,branch)
   " Prepare functions
   if a:type=='Readme'
     let l:Fun=function('vizardry#grimoire#ReadmeUrl')
@@ -77,7 +77,7 @@ function! vizardry#remote#DisplayDoc(site,fallback,type)
   endif
   " Retrieve url
   call vizardry#echo('Looking for '.a:type.' url','s')
-  let l:url=l:Fun(a:site)
+  let l:url=l:Fun(a:site,a:branch)
   call vizardry#echo('Retrieving '.a:type,'s')
   " test url
   if l:url== ""
@@ -89,7 +89,7 @@ function! vizardry#remote#DisplayDoc(site,fallback,type)
   if fourofour != ""
     call vizardry#echo('No '.a:type.' found', "e")
     if a:fallback == 1 && g:VizardryReadmeHelpFallback == 1
-      call vizardry#remote#DisplayDoc(a:site,0,l:otype)
+      call vizardry#remote#DisplayDoc(a:site,0,l:otype,a:branch)
     endif
   else
     call vizardry#remote#ReadUrl(l:reader,url)

@@ -47,10 +47,9 @@ function! vizardry#gitlab#RawFileUrlFromHref(href)
 endfunction
 
 " Return the Readme.md url for site/name
-function! vizardry#gitlab#ReadmeUrl(repo)
+function! vizardry#gitlab#ReadmeUrl(repo,branch)
   " List sources
-  let ans=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/tree/master')
-  echo s:baseURL.'/'.a:repo.'/tree/master'
+  let ans=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/tree/'.a:branch)
   let icase=&ignorecase
   set ignorecase
   " Get readme url
@@ -60,9 +59,9 @@ function! vizardry#gitlab#ReadmeUrl(repo)
 endfunction
 
 " Return the Help url for repo (doc/name.txt)
-function! vizardry#gitlab#HelpUrl(repo)
+function! vizardry#gitlab#HelpUrl(repo,branch)
   " List sources
-  let links=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/tree/master/doc/')
+  let links=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/tree/'.a:branch.'/doc/')
   let id=0
   let docnames=vizardry#grimoire#GetDocNames(a:repo)
   for doc in docnames

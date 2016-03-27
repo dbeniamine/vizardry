@@ -113,9 +113,9 @@ function! vizardry#invoke#handleInvokation(site, description, inputNice, index)
       let ret=a:index+1
       let valid = 1
     elseif response ==? 'd'
-      call vizardry#remote#DisplayDoc(a:site,1,'Readme')
+      call vizardry#remote#DisplayDoc(a:site,1,'Readme', 'master')
     elseif response ==? 'h'
-      call vizardry#remote#DisplayDoc(a:site,1,'Help')
+      call vizardry#remote#DisplayDoc(a:site,1,'Help', 'master')
     elseif response ==? 'a'
       let valid=1
     elseif response ==? 'p'
@@ -136,11 +136,12 @@ endfunction
 function! vizardry#invoke#ExtractArgsFromQuery(input, args)
   if a:input =~ a:args
     let value =substitute(a:input, '.*'.a:args.'\s\s*\(\S*\).*','\1','')
-    let query=substitute(substitute(a:input, a:args.'\s\s*\S*','',''),
-        \'^\s*\(\S.*\S\)\s*$','\1','')
-    return [query,value]
+    let query=substitute(a:input, a:args.'\s\s*\S*','','')
+  else
+    let value=""
+    let query=a:input
   endif
-  return [a:input,""]
+  return [substitute(query,'^\s*\(\S.*\S\)\s*$','\1',''),value]
 endfunction
 
 " Format query to github API

@@ -40,9 +40,9 @@ let s:currentGrimoire=g:VizardryDefaultGrimoire
 "   the function described below:
 "       + vizardry#mygrimoire#CloneUrl(repo)
 "           + return the url for cloning repo
-"       + vizardry#mygrimoires#ReadmeUrl(site,name)
+"       + vizardry#mygrimoires#ReadmeUrl(repo,branch)
 "           + return the url to the readme (markdown not HTML)
-"       + vizardry#mygrimoires#HelpUrl(site,name)
+"       + vizardry#mygrimoires#HelpUrl(repo,branch)
 "           + return the url to the help (vim help something like '/doc/name.txt')
 "       + vizardry#mygrimoires#HandleQuery(query)
 "           + Handle query at github API format (https://api.github.com/search/repositories?q=user:dbeniamine+vim+fork:true+sort:stars)
@@ -91,12 +91,12 @@ function! vizardry#grimoire#CloneUrl(site)
   return function('vizardry#'.s:currentGrimoire.'#CloneUrl')(a:site)
 endfunction
 
-function! vizardry#grimoire#ReadmeUrl(site)
-  return function('vizardry#'.s:currentGrimoire.'#ReadmeUrl')(a:site)
+function! vizardry#grimoire#ReadmeUrl(site,branch)
+  return function('vizardry#'.s:currentGrimoire.'#ReadmeUrl')(a:site,a:branch)
 endfunction
 
-function! vizardry#grimoire#HelpUrl(site)
-  return function('vizardry#'.s:currentGrimoire.'#HelpUrl')(a:site)
+function! vizardry#grimoire#HelpUrl(site,branch)
+  return function('vizardry#'.s:currentGrimoire.'#HelpUrl')(a:site,a:branch)
 endfunction
 
 function! vizardry#grimoire#HandleQuery(query)

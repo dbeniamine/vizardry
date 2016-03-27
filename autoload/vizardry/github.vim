@@ -37,14 +37,16 @@ function! vizardry#github#CloneUrl(repo)
 endfunction
 
 " Return the Readme.md url for site/name
-function! vizardry#github#ReadmeUrl(repo)
-  let answer=join(vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/readme'),"\n")
+function! vizardry#github#ReadmeUrl(repo,branch)
+  let answer=join(vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/readme?ref='
+        \.a:branch),"\n")
   return substitute(answer,'.*download_url"[^"]*"\([^"]*\)",.*','\1','')
 endfunction
 
 " Return the Help url for repo (doc/name.txt)
-function! vizardry#github#HelpUrl(repo)
-  let answers=vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/contents/doc')
+function! vizardry#github#HelpUrl(repo,branch)
+  let answers=vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/contents/doc?ref='
+        \.a:branch)
   let found=0
   let docnames=vizardry#grimoire#GetDocNames(a:repo)
         \".*.txt"]

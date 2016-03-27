@@ -55,9 +55,9 @@ function! vizardry#bitbucket#RawFileUrlFromHref(href)
 endfunction
 
 " Return the Readme.md url for site/name
-function! vizardry#bitbucket#ReadmeUrl(repo)
+function! vizardry#bitbucket#ReadmeUrl(repo,branch)
   " List sources
-  let ans=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/src')
+  let ans=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/src/?at='.a:branch)
   let icase=&ignorecase
   set ignorecase
   " Get readme
@@ -67,9 +67,9 @@ function! vizardry#bitbucket#ReadmeUrl(repo)
 endfunction
 
 " Return the Help url for repo (doc/name.txt)
-function! vizardry#bitbucket#HelpUrl(repo)
+function! vizardry#bitbucket#HelpUrl(repo,branch)
   " List sources
-  let ans=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/src')
+  let ans=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/src/?at='.a:branch)
   " Get contents of doc directory
   let docurl=ans[match(ans,'/doc/')]
   let docurl=substitute(docurl,'.*href="\([^"]*\)".*','\1','')
