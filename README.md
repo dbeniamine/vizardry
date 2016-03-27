@@ -61,7 +61,7 @@ Current Version: 2.0
 
     **Important informations**: Helps and Readme are not read from stdin anymore
     but from temporary file thus the Reader syntax have changed see:
-    [here](#display-readme-on-evolve).
+    [here](#display-readme-on-invoke).
 *   v1.4 provides several bug fix and the capability of seeing help files from
  Invoke and Evolve prompt.
 *   v1.3 allow to Invoke directly from Scry, to do so, I had to modify the input
