@@ -1,0 +1,265 @@
+*Vizardry-Dev*
+*vizardry-Dev*
+                ________________ _______ _______ ______  _______
+        |\     /\__   __/ ___   (  ___  (  ____ (  __  \(  ____ |\     /|
+        | )   ( |  ) (  \/   )  | (   ) | (    )| (  \  | (    )( \   / )
+        | |   | |  | |      /   | (___) | (____)| |   ) | (____)|\ (_) /
+        ( (   ) )  | |     /   /|  ___  |     __| |   | |     __) \   /
+         \ \_/ /   | |    /   / | (   ) | (\ (  | |   ) | (\ (     ) (
+          \   / ___) (___/   (_/| )   ( | ) \ \_| (__/  | ) \ \__  | |
+           \_/  \_______(_______|/     \|/   \__(______/|/   \__/  \_/
+
+                    A vim plugin manager for lazy people
+
+===============================================================================
+Table of Contents                                     *Vizardry-Dev-contents* ~
+
+    1. Introduction .............................|Vizardry-Dev-intro|
+    2. File hierarchy ...........................|Vizardry-Dev-files|
+    3. Global Variables .........................|Vizardry-Dev-variables|
+    4. General functions ........................|Vizardry-Dev-general|
+        4.1 Echo.................................|Vizardry-Dev:echo()|
+        4.2 doPrompt.............................|Vizardry-Dev:doPrompt()|
+    5. Remote functions .........................|Vizardry-Dev-remote|
+        5.1 GetUrl...............................|Vizardry-Dev:GetUrl()|
+        5.2 ReadUrl..............................|Vizardry-Dev:ReadUrl()|
+        5.3 DisplayDoc...........................|Vizardry-Dev:DisplayDoc()|
+    6. Grimoires ................................|Vizardry-Dev-grimoires|
+    7. Version Control Systems ..................|Vizardry-Dev-vcs|
+
+===============================================================================
+Introduction                                             *Vizardry-Dev-intro* ~
+
+Please read this help before developing Vizardry, it describe the existing
+functions and variables that exists and should be used.
+
+To make Vizardry as portable as possible, we try to limit the calls to the
+|system()| function and |:!| command. Such calls should only rely on basic
+Unix commands such as `cd`, `mv` and `rm`. Vim provide some very useful
+function to replace `sed` and `grep` such as |match()| and |substitute()|,
+please use them.
+
+Vizardry should remain as light as possible, to do so, we rely on autoload.
+Autoloaded files should be consistent in terms of purpose and a small as
+possible.
+
+New files, helpers functions and global variables should be documented in this
+file.
+
+Each file should start the Licence (GPL V3.0) followed by:
+>
+    if !exists("g:loaded_vizardry")
+      echoerr "Vizardry not loaded"
+      finish
+    endif
+
+    " This files contains usefull function that might be used by any other
+    " autoloaded file
+
+    let g:save_cpo = &cpo
+    set cpo&vim
+<
+And finish with:
+>
+    let cpo=save_cpo
+    " vim:set et sw=2:
+<
+Please respect the modeline.
+
+If you only want to write the hooks for adding a bundle provider you can go
+directly to |Vizardry-dev-grimoires|.
+
+===============================================================================
+File hierarchy                                           *Vizardry-Dev-files* ~
+
+Vizardry files are organized as follow:
+>
+    plugin/vizardry.vim             " Contains the minimum code required for
+                                    " Vizardry to work (command definition,
+                                    " main variables)
+   autoload/vizardry.vim            " Basic helpers and variable used by almost
+                                    " every Vizardry functions
+   autoload/vizardry/banish.vim     " Everything for Banish, UnBannish,Vanish
+   autoload/vizardry/magic.vim      " Everything for Magic commands
+   autoload/vizardry/remote.vim     " Helpers for remote commands
+   autoload/vizardry/invoke.vim     " Everything for Invoke and Scry commands
+   autoload/vizardry/evolve.vim     " Everything to evolve bundles
+   autoload/vizardry/git.vim        " wrapper around git commands
+   autoload/vizardry/grimoire.vim   " Grimoires definition and generic
+                                    " grimoire helpers
+   autoload/vizardry/github.vim     " Github grimoire
+   autoload/vizardry/bitbucket.vim  " Bitbucket grimoire
+   autoload/vizardry/gitlab.vim     " Gitlab grimoire
+<
+
+===============================================================================
+Global variables                                     *Vizardry-Dev-variables* ~
+
+The following global variable are define in Vizardry
+
+Defined in `plugin/vizardry.vim`:
+>
+    + g:loaded_vizardry         Vizardry version if loaded ex "v2.0b1"
+    + g:VizardryGitMethod       Git method used to download bundles, "clone"
+                                or "submodule add"
+    + g:VizardryGitBaseDir      Git root directory if g:VizardryGitMethod != "clone"
+                                "" otherwise
+    + g:VizardryCommitMsgs      A dictionnary containing commit messages for
+                                Vizardry action when GitMethod is submodules
+<
+
+Defined in `autoload/vizardry.vim`:
+>
+    + g:Vizardry#scriptDir          The path to Vizardry
+    + g:vizardry#bundleDir          The path to bundles directory
+    + g:vizardry#relativeBundleDir  The relative path to bundles from
+                                    g:VizardryGitBaseDir, only pertinent if
+                                    g:VizardryGitMethod != "clone"
+
+Defined in `autoload/vizardry/remote.vim` (all theses variables are user
+redefinable settings):
+>
+    + g:VizardryDefaultGrimoire     Default grimoire to use
+    + g:VizardryReadmeReader        Command to display Readme
+    + g:VizardryHelpReader          Command to display Help
+    + g:VizardryReadmeHelpFallback  If set to 1 fallback from Help to Readme
+                                    (and opposite) if file not found)
+<
+
+Defined in `autoload/vizardry/invoke.vim`:
+>
+    + g:VizardryNbScryResults       Number of results to display on Scry
+    + g:VizardrySearchOptions       Default search options conforming to
+                                    github API.
+<
+Defined in `autoload/vizardry/evolve.vim`:
+>
+    + g:VizardryViewReadmeOnEvolve  Should we ask for displaying Readme, Help
+                                    and log on Evolve
+<
+Finally the variable `g:VizardryDebug` can be set at anytime to display debug
+messages see |vizardry#echo()|
+
+===============================================================================
+General functions                                      *Vizardry-Dev-general* ~
+
+
+General helpers functions are defined in `autoload/vizardry.vim`.
+
+                                                          *Vizardry-Dev:echo()*
+The `vizardry#echo` function is responsible for almost all user interaction,
+it aims at providing a coherent ui:
+>
+    " Should be used for every messages
+    " Type can be:
+    "   e for error
+    "   w for warning
+    "   q for asking a question
+    "   s to tell the user Vizardry is searching somethin
+    "   D to print only in debug mode
+    " If extra argument is >0, then return the user answer
+    function! vizardry#echo(msg,type,...)
+<
+                                                      *Vizardry-Dev:doPrompt()*
+To prompt the user please use the `vizardry#doPrompt` function that ensure the
+user answer is correct and uses `vizardry#echo()`:
+
+>
+    " Prompt the user with prompt
+    " Ensure the answer is correct aka is a string contained in the list
+    " inputChoises
+    function! vizardry#doPrompt(prompt, inputChoices)
+<
+The list of Invoked and Banished bundles can be retrieve with the
+`vizardry#ListInvoked(match)` and `vizardry#ListBanished(match)` function, set
+`match` to `'*'` to hve the complete list.
+
+Finally bundles can be reloaded with `vizardry#ReloadScripts()`. Please note
+that this function does not reload autoloaded files.
+
+===============================================================================
+Remote functions                                        *Vizardry-Dev-remote* ~
+
+A few functions are defined for remote actions in
+`autoload/vizardry/remote.vim`:
+
+
+                                                        *Vizardry-Dev:GetUrl()*
+The `vizardry#remote#GetUrl()` is a wrapper over `curl`,  it should be the
+only way Vizardry download files.
+>
+    " Call curl on the given url
+    " Returns the result as a list
+    function! vizardry#remote#GetURL(url)
+<
+                                                       *Vizardry-Dev:ReadUrl()*
+Displays the contents of a (remote) file on Vim:
+>
+    " Use the commmand reader to read the content at url
+    function! vizardry#remote#ReadUrl(reader,url)
+<
+                                                    *Vizardry-Dev:DisplayDoc()*
+Display documentatio for a site (e.g: dbeniamine/vizardry):
+>
+    " Display documentation for site
+    " If fallback == 1 Display the other type is the requested type is not found
+    " type MUST be 'Readme' or 'Help'
+    function! vizardry#remote#DisplayDoc(site,fallback,type)
+<
+
+
+===============================================================================
+grimoires                                            *Vizardry-Dev-grimoires* ~
+
+To add a grimoire (provider):
+ + create a file named `autoload/vizardry/mygrimoire.vim` which implement each
+ of the functions described below:
+      + `vizardry#mygrimoire#CloneUrl(repo)`
+          + return the url for cloning repo
+      + `vizardry#mygrimoires#ReadmeUrl(site,name)`
+          + return the url to the readme (markdown not HTML)
+      + `vizardry#mygrimoires#HelpUrl(site,name)`
+          + return the url to the help (vim help something like '/doc/name.txt')
+      + `vizardry#mygrimoires#HandleQuery(query)`
+          + Handle query at github API format [1]
+          + return a list a repo
+              a repo is a dictionnary (see |Dictionnaries|) with two values:
+                  + `site`: the site eg: dbeniamine/vizardry
+                  + \ description`: the repo description
+          + This function MUST use `vizardry#remote#GetURL(url)` instead of
+           calling `curl`, this function returns the result as a list
+     You can use the provided generic helper defined in the end of this
+     file. For more info see: `autoload/vizardry/github.vim`
+ + Add the grimoire name to ̀the list `s:VizardryAvailableGrimoires` defined in
+   `autoload/vizardry/grimoire.vim`
+ + Update the documentation to add the grimoire and the search api
+ + Please test before creating a pull request
+
+[1] https://api.github.com/search/repositories?q=user:dbeniamine+vim+fork:true+sort:stars
+
+The following helpers function are available to write grimoires code:
+
+>
+    " Extract site from origin if origin looks like
+    " .*baseurl.site[.git]
+    " for instance https://github.com/dbeniamine/vizardry.git, github.com
+    " will return dbeniamine/vizardry.git
+    function! vizardry#grimoire#SiteFromOriginHelper(origin,baseurl)
+
+    " Returns a list of possible matches for documentation names for repo a:repo
+    " sorted by pertinence
+    function! vizardry#grimoire#GetDocNames(repo)
+<
+===============================================================================
+Version Control Systems                                    *Vizardry-Dev-vcs* ~
+
+Currently the only supported vcs for cloning bundles is git, but at some point
+I think it could be interesting to make Vizardry able to handle mercurial
+repositories.
+
+If you are interested by implementing this please take a look at
+`autoload/vizardry/git.vim` to see the function that needs to be implemented,
+then a mechanism similar to the one used for the grimoires can be use to
+select the vcs.
+
+Do not hesitate to contact me on github if you want to work on this project.
