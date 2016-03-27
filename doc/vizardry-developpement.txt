@@ -74,22 +74,29 @@ File hierarchy                                           *Vizardry-Dev-files* ~
 
 Vizardry files are organized as follow:
 >
-    plugin/vizardry.vim             " Contains the minimum code required for
-                                    " Vizardry to work (command definition,
-                                    " main variables)
-   autoload/vizardry.vim            " Basic helpers and variable used by almost
-                                    " every Vizardry functions
-   autoload/vizardry/banish.vim     " Everything for Banish, UnBannish,Vanish
-   autoload/vizardry/magic.vim      " Everything for Magic commands
-   autoload/vizardry/remote.vim     " Helpers for remote commands
-   autoload/vizardry/invoke.vim     " Everything for Invoke and Scry commands
-   autoload/vizardry/evolve.vim     " Everything to evolve bundles
-   autoload/vizardry/git.vim        " wrapper around git commands
-   autoload/vizardry/grimoire.vim   " Grimoires definition and generic
-                                    " grimoire helpers
-   autoload/vizardry/github.vim     " Github grimoire
-   autoload/vizardry/bitbucket.vim  " Bitbucket grimoire
-   autoload/vizardry/gitlab.vim     " Gitlab grimoire
+    plugin/vizardry.vim                         " Contains the minimum code
+                                                " required to load Vizardry
+                                                " (command definition, main
+                                                " variables)
+   autoload/vizardry.vim                        " Basic helpers and variable
+                                                " used by almost every Vizardry
+                                                " functions
+   autoload/vizardry/banish.vim                 " Everything for Banish,
+                                                " UnBannish,Vanish
+   autoload/vizardry/magic.vim                  " Everything for Magic commands
+   autoload/vizardry/remote.vim                 " Helpers for remote commands
+   autoload/vizardry/invoke.vim                 " Everything for Invoke and Scry
+   autoload/vizardry/evolve.vim                 " Everything to evolve bundles
+   autoload/vizardry/git.vim                    " wrapper around git commands
+   autoload/vizardry/grimoire.vim               " Grimoires definition and
+                                                " generic grimoire helpers
+   autoload/vizardry/grimoires/                 " Grimoires directory any
+                                                " *.vim in this directory is
+                                                " considered as an avaible
+                                                " grimoire
+   autoload/vizardry/grimoires/github.vim       " Github grimoire
+   autoload/vizardry/grimoires/bitbucket.vim    " Bitbucket grimoire
+   autoload/vizardry/grimoires/gitlab.vim       " Gitlab grimoire
 <
 
 ===============================================================================

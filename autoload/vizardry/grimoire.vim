@@ -60,7 +60,7 @@ let s:currentGrimoire=g:VizardryDefaultGrimoire
 
 " List all files in autoload/grimoires/*.vim
 let s:VizardryAvailableGrimoires = split(substitute(glob(expand('<sfile>:p:h')
-      \.'/grimoires/*'),'[^\n]*\/\([^\.]*\)\.vim','\1','g'),'\n')
+      \.'/grimoires/*.vim'),'[^\n]*\/\([^\.]*\)\.vim','\1','g'),'\n')
 
 " Grimoires command functions {{{2
 
