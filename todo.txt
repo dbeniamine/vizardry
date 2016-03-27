@@ -1,1 +1,2 @@
 (B) +pathogen Reload autoloaded file as in scriptease
+(B) +grimoires Clone mercurial from bitbucket
