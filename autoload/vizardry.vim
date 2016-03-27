@@ -100,7 +100,7 @@ function! vizardry#usage()
   call vizardry#echo("Then it is possible to temporay :Banish a plugin","n")
   call vizardry#echo("or even :Vanish it completly.","n")
   echo "\n"
-  call vizardry#echo("You can also :Evolve on or all of them","n")
+  call vizardry#echo("You can also :Evolve one or all of them","n")
   echo "\n"
   call vizardry#echo("For more info look at :help vizardry","w")
 endfunction

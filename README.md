@@ -43,14 +43,14 @@
         3. [:Magicsplit](#magicsplit)
         4. [:Magicvsplit](#magicvsplit)
         5. [:MagicCommit](#magiccommit)
-6. [Spread the work](#spread-the-word)
+6. [Get involved](#get-involved)
 
 ## Release notes
 
-Current Version: 2.0b5
+Current Version: 2.0
 
 *   v2.0 comes with several improvements:
-    * Grimoires abstraction to install bundles from any provider (Grimoires 
+    * Grimoires abstraction to install bundles from any provider (Grimoires
     currently available: github, bitbuckets, gitlab), see [Grimoire](#grimoire).
     * Re enabling of `:Magic` family commands with support for submodule
     mode, see [Magic](#magic)).
@@ -374,12 +374,6 @@ reason, Bitbuckets queries does not respect `g:VizardryNbScryResults`.
 *   Gitlab API is even worse, neither `user` nor ̀`language` or any other github
 search options works.
 
-
-**Help wanted:** currently only github and bitbucket are available, but it is
-very easy to add a new Grimoire, see
-[issue#3](https://github.com/dbeniamine/vizardry/issues/3) and `:help
-Vizardry-Dev-grimoires`.
-
 # Magic
 
 Vizardry Magic is a simple way to handle plugin specific configurations files,
@@ -434,7 +428,9 @@ only: Commit the changes to the given magic file.
 
 Does nothing in clone mode
 
-# Spread the word
+# Get involved
+
+## Spread the word
 
 If you like Vizardry and you are also a vimscript developper, an easy way to
 spread the word is to add a Vizardry install section to your plugins README
@@ -444,3 +440,17 @@ If you have installed [Vizardry](https://github.com/dbeniamine/vizardry) just
 run the following from vim:
 
     :Invoke -u <your_username> <your_plugin_name>
+
+## Write Grimoires
+
+Currently only github and bitbucket are available, but it is very easy to add a
+new Grimoire, see [issue#3](https://github.com/dbeniamine/vizardry/issues/3)
+and `:help Vizardry-Dev-grimoires`.
+
+## Develop inside Vizardry
+
+If you like Vizardry and want to help, you can look add `vizardry/todo.txt`
+see what I improvement I'm planning to add to Vizardry.
+If you are going to modify Vizardry code, please take a look at |Vizardry-Dev|
+before writing any code.
+Feel free to open pull requests when you are done :).
