@@ -13,7 +13,6 @@
 
 ## Table of contents
 
-0. [Announce](#announce)
 1. [Release notes](#release-notes)
 2. [Introduction](#introduction)
     1. [Why This Fork ?](#why-this-fork)
@@ -45,13 +44,6 @@
         4. [:Magicvsplit](#magicvsplit)
         5. [:MagicCommit](#magiccommit)
 6. [Get involved](#get-involved)
-
-## Announce
-
-**Help wanted:** I need help in writing small piece of code to make vizardry
-2.0 able to install bundles from any provider (github, bitbucket, gitlabs,
-...) see [issue#3](https://github.com/dbeniamine/vizardry/issues/3).
-
 
 ## Release notes
 
