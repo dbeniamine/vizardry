@@ -35,30 +35,32 @@ let s:currentGrimoire=g:VizardryDefaultGrimoire
 
 " Vizardry grimoires API {{{1
 
-" To add a grimoire (provider):
-"  + create a file autoload/vizardry/mygrimoire.vim which implement each of
-"   the function described below:
-"       + vizardry#mygrimoire#CloneUrl(repo)
-"           + return the url for cloning repo
-"       + vizardry#mygrimoires#ReadmeUrl(repo,branch)
-"           + return the url to the readme (markdown not HTML)
-"       + vizardry#mygrimoires#HelpUrl(repo,branch)
-"           + return the url to the help (vim help something like '/doc/name.txt')
-"       + vizardry#mygrimoires#HandleQuery(query)
-"           + Handle query at github API format (https://api.github.com/search/repositories?q=user:dbeniamine+vim+fork:true+sort:stars)
-"           + return a list a repo
-"               a repo is a dictionnary with two values:
-"                   + site: the site eg: dbeniamine/vizardry
-"                   + description: the repo description
-"           + This function MUST use vizardry#remote#GetURL(url) instead of
-"            system('curl '.url) this function returns the result as a list
+" To add a grimoire (provider) one only need to create a file
+" autoload/vizardry/grimoires/mygrimoire.vim which implement each of the
+" functions described below:
+"   + vizardry#grimoires#mygrimoire#CloneUrl(repo)
+"       + return the url for cloning repo
+"   + vizardry#grimoires#mygrimoires#ReadmeUrl(repo,branch)
+"       + return the url to the readme (markdown not HTML)
+"   + vizardry#grimoires#mygrimoires#HelpUrl(repo,branch)
+"       + return the url to the help (vim help something like '/doc/name.txt')
+"   + vizardry#grimoires#mygrimoires#HandleQuery(query)
+"       + Handle query at github API format (https://api.github.com/search/repositories?q=user:dbeniamine+vim+fork:true+sort:stars)
+"       + return a list a repo
+"           a repo is a dictionnary with two values:
+"               + site: the site eg: dbeniamine/vizardry
+"               + description: the repo description
+"       + This function MUST use vizardry#remote#GetURL(url) instead of
+"        system('curl '.url) this function returns the result as a list
 "      You can use the provided generic helper defined in the end of this
-"      file. For more info see: autoload/vizardry/github.vim
-"  + Add the grimoire name to the list below
-"  + Update the documentation to add the grimoire and the search api
-"  + Please test before creating a pull request
+"      file. For more info see:
+"      autoload/vizardry/grimoires/[github,gitlab,bitbucket].vim
+"  Once a grimoire is done, please update the documentation (user and
+"  developper) accordingly.
 
-let s:VizardryAvailableGrimoires = ['github', 'bitbucket', 'gitlab']
+" List all files in autoload/grimoires/*.vim
+let s:VizardryAvailableGrimoires = split(substitute(glob(expand('<sfile>:p:h')
+      \.'/grimoires/*'),'[^\n]*\/\([^\.]*\)\.vim','\1','g'),'\n')
 
 " Grimoires command functions {{{2
 
@@ -88,19 +90,19 @@ endfunction
 
 " Wrappers arround grimoire specific functions {{{2
 function! vizardry#grimoire#CloneUrl(site)
-  return function('vizardry#'.s:currentGrimoire.'#CloneUrl')(a:site)
+  return function('vizardry#grimoires#'.s:currentGrimoire.'#CloneUrl')(a:site)
 endfunction
 
 function! vizardry#grimoire#ReadmeUrl(site,branch)
-  return function('vizardry#'.s:currentGrimoire.'#ReadmeUrl')(a:site,a:branch)
+  return function('vizardry#grimoires#'.s:currentGrimoire.'#ReadmeUrl')(a:site,a:branch)
 endfunction
 
 function! vizardry#grimoire#HelpUrl(site,branch)
-  return function('vizardry#'.s:currentGrimoire.'#HelpUrl')(a:site,a:branch)
+  return function('vizardry#grimoires#'.s:currentGrimoire.'#HelpUrl')(a:site,a:branch)
 endfunction
 
 function! vizardry#grimoire#HandleQuery(query)
-  return function('vizardry#'.s:currentGrimoire.'#HandleQuery')(a:query)
+  return function('vizardry#grimoires#'.s:currentGrimoire.'#HandleQuery')(a:query)
 endfunction
 
 function! vizardry#grimoire#GetCurrentGrimoire()
@@ -127,7 +129,7 @@ endfunction
 " Side effect: change the grimoire
 function! vizardry#grimoire#SiteFromOrigin(url)
   let grimoire=vizardry#grimoire#GrimoireFromOrigin(a:url)
-  return function('vizardry#'.grimoire.'#SiteFromOrigin')(a:url)
+  return function('vizardry#grimoires#'.grimoire.'#SiteFromOrigin')(a:url)
 endfunction
 
 " Extract site from origin if origin looks like

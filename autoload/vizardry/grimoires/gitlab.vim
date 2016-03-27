@@ -37,17 +37,17 @@ let s:baseURL='https://'.s:instanceUrl
 let s:SearchUrl=s:baseURL.'search?search='
 
 " Return the clone url for site/name
-function! vizardry#gitlab#CloneUrl(repo)
+function! vizardry#grimoires#gitlab#CloneUrl(repo)
   return s:baseURL.a:repo.'.git'
 endfunction
 
-function! vizardry#gitlab#RawFileUrlFromHref(href)
+function! vizardry#grimoires#gitlab#RawFileUrlFromHref(href)
   return s:baseURL.substitute(substitute(a:href,'.*href="\([^"]*\)".*','\1','')
         \,'/blob/','/raw/','')
 endfunction
 
 " Return the Readme.md url for site/name
-function! vizardry#gitlab#ReadmeUrl(repo,branch)
+function! vizardry#grimoires#gitlab#ReadmeUrl(repo,branch)
   " List sources
   let ans=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/tree/'.a:branch)
   let icase=&ignorecase
@@ -55,11 +55,11 @@ function! vizardry#gitlab#ReadmeUrl(repo,branch)
   " Get readme url
   let readmeurl=ans[match(ans,'.*href.*strong')]
   let ignorecase=icase
-  return vizardry#gitlab#RawFileUrlFromHref(readmeurl)
+  return vizardry#grimoires#gitlab#RawFileUrlFromHref(readmeurl)
 endfunction
 
 " Return the Help url for repo (doc/name.txt)
-function! vizardry#gitlab#HelpUrl(repo,branch)
+function! vizardry#grimoires#gitlab#HelpUrl(repo,branch)
   " List sources
   let links=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/tree/'.a:branch.'/doc/')
   let id=0
@@ -72,7 +72,7 @@ function! vizardry#gitlab#HelpUrl(repo,branch)
         break
       elseif links[id] =~ doc
         " Matching documentation
-        return vizardry#gitlab#RawFileUrlFromHref(links[id])
+        return vizardry#grimoires#gitlab#RawFileUrlFromHref(links[id])
       endif
     endwhile
   endfor
@@ -80,7 +80,7 @@ function! vizardry#gitlab#HelpUrl(repo,branch)
 endfunction
 
 " Return the repo name from the origin url
-function vizardry#gitlab#SiteFromOrigin(path)
+function vizardry#grimoires#gitlab#SiteFromOrigin(path)
   return vizardry#grimoire#SiteFromOriginHelper(a:path,
         \substitute(s:baseURL,'.*/\([^/]*\)/$','\1',''))
 endfunction
@@ -91,7 +91,7 @@ endfunction
 "   a repo is a dictionnary with two values:
 "       + site: the site name e.g: dbeniamine/vizardry
 "       + description: the description
-function! vizardry#gitlab#FormatQuery(input)
+function! vizardry#grimoires#gitlab#FormatQuery(input)
   " Handle users
   let query=substitute(a:input,'user:\([^+]*\)','\1', '')
   " Remove +vim in the end
@@ -102,8 +102,8 @@ function! vizardry#gitlab#FormatQuery(input)
   return 'vim+'.query
 endfunction
 
-function! vizardry#gitlab#HandleQuery(input)
-  let l:query=vizardry#gitlab#FormatQuery(a:input)
+function! vizardry#grimoires#gitlab#HandleQuery(input)
+  let l:query=vizardry#grimoires#gitlab#FormatQuery(a:input)
   let l:results=vizardry#remote#GetURL(s:SearchUrl.l:query)
   let parsedList=[]
   let inside=0

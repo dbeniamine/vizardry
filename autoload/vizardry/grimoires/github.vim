@@ -32,19 +32,19 @@ let s:rawUrl="https://raw.githubusercontent.com/"
 let s:SearchUrl=s:APIUrl.'search/repositories?q='
 
 " Return the clone url for site/name
-function! vizardry#github#CloneUrl(repo)
+function! vizardry#grimoires#github#CloneUrl(repo)
   return s:baseURL.a:repo
 endfunction
 
 " Return the Readme.md url for site/name
-function! vizardry#github#ReadmeUrl(repo,branch)
+function! vizardry#grimoires#github#ReadmeUrl(repo,branch)
   let answer=join(vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/readme?ref='
         \.a:branch),"\n")
   return substitute(answer,'.*download_url"[^"]*"\([^"]*\)",.*','\1','')
 endfunction
 
 " Return the Help url for repo (doc/name.txt)
-function! vizardry#github#HelpUrl(repo,branch)
+function! vizardry#grimoires#github#HelpUrl(repo,branch)
   let answers=vizardry#remote#GetURL(s:APIUrl.'repos/'.a:repo.'/contents/doc?ref='
         \.a:branch)
   let found=0
@@ -63,7 +63,7 @@ function! vizardry#github#HelpUrl(repo,branch)
 endfunction
 
 " Return the repo name from the origin url
-function vizardry#github#SiteFromOrigin(path)
+function vizardry#grimoires#github#SiteFromOrigin(path)
   return vizardry#grimoire#SiteFromOriginHelper(a:path,
         \substitute(s:baseURL,'.*/\([^/]*\)/$','\1',''))
 endfunction
@@ -74,7 +74,7 @@ endfunction
 "   a repo is a dictionnary with two values:
 "       + site: the site name e.g: dbeniamine/vizardry
 "       + description: the description
-function! vizardry#github#HandleQuery(input)
+function! vizardry#grimoires#github#HandleQuery(input)
   let l:results=vizardry#remote#GetURL(s:SearchUrl.a:input)
   let parsedList=[]
   for line in results

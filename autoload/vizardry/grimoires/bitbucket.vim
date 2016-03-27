@@ -38,7 +38,7 @@ let s:APIUrl=s:baseURL.'/api/2.0/repositories'
 let s:SearchUrl=s:baseURL.'/repo/all/?name='
 
 " Return the clone url for site/name
-function! vizardry#bitbucket#CloneUrl(repo)
+function! vizardry#grimoires#bitbucket#CloneUrl(repo)
   let ans=join(vizardry#remote#GetURL(s:APIUrl.'/'.a:repo), ' ')
   let scm=substitute(ans,'.*"scm": "\([^"]*\)".*','\1','')
   if scm != "git"
@@ -49,13 +49,13 @@ function! vizardry#bitbucket#CloneUrl(repo)
   return s:baseURL.a:repo
 endfunction
 
-function! vizardry#bitbucket#RawFileUrlFromHref(href)
+function! vizardry#grimoires#bitbucket#RawFileUrlFromHref(href)
   return s:baseURL.substitute(substitute(a:href,'.*href="\([^"]*\)".*','\1','')
         \,'/src/','/raw/','')
 endfunction
 
 " Return the Readme.md url for site/name
-function! vizardry#bitbucket#ReadmeUrl(repo,branch)
+function! vizardry#grimoires#bitbucket#ReadmeUrl(repo,branch)
   " List sources
   let ans=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/src/?at='.a:branch)
   let icase=&ignorecase
@@ -63,11 +63,11 @@ function! vizardry#bitbucket#ReadmeUrl(repo,branch)
   " Get readme
   let readmeurl=ans[match(ans,'[^\.]readme')]
   let ignorecase=icase
-  return vizardry#bitbucket#RawFileUrlFromHref(readmeurl)
+  return vizardry#grimoires#bitbucket#RawFileUrlFromHref(readmeurl)
 endfunction
 
 " Return the Help url for repo (doc/name.txt)
-function! vizardry#bitbucket#HelpUrl(repo,branch)
+function! vizardry#grimoires#bitbucket#HelpUrl(repo,branch)
   " List sources
   let ans=vizardry#remote#GetURL(s:baseURL.'/'.a:repo.'/src/?at='.a:branch)
   " Get contents of doc directory
@@ -86,7 +86,7 @@ function! vizardry#bitbucket#HelpUrl(repo,branch)
         break
       elseif links[id] =~ doc
         " Matching documentation
-        return vizardry#bitbucket#RawFileUrlFromHref(links[id])
+        return vizardry#grimoires#bitbucket#RawFileUrlFromHref(links[id])
       endif
     endwhile
   endfor
@@ -94,7 +94,7 @@ function! vizardry#bitbucket#HelpUrl(repo,branch)
 endfunction
 
 " Return the repo name from the origin url
-function vizardry#bitbucket#SiteFromOrigin(path)
+function vizardry#grimoires#bitbucket#SiteFromOrigin(path)
   return vizardry#grimoire#SiteFromOriginHelper(a:path,
         \substitute(s:baseURL,'.*/\([^/]*\)/$','\1',''))
 endfunction
@@ -105,7 +105,7 @@ endfunction
 "   a repo is a dictionnary with two values:
 "       + site: the site name e.g: dbeniamine/vizardry
 "       + description: the description
-function! vizardry#bitbucket#FormatQuery(input)
+function! vizardry#grimoires#bitbucket#FormatQuery(input)
   " Handle users
   let query=substitute(a:input,'user:\([^+]*\)','\1\/', '')
   " Handle language
@@ -120,8 +120,8 @@ function! vizardry#bitbucket#FormatQuery(input)
   return query
 endfunction
 
-function! vizardry#bitbucket#HandleQuery(input)
-  let l:query=vizardry#bitbucket#FormatQuery(a:input)
+function! vizardry#grimoires#bitbucket#HandleQuery(input)
+  let l:query=vizardry#grimoires#bitbucket#FormatQuery(a:input)
   let l:results=vizardry#remote#GetURL(s:SearchUrl.l:query)
   let parsedList=[]
   let inside=0
