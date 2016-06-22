@@ -1,2 +1,3 @@
-(B) +pathogen Reload autoloaded file as in scriptease
+(A) +Evolve parallel evolve
 (B) +grimoires Clone mercurial from bitbucket
+(B) +pathogen Reload autoloaded file as in scriptease
