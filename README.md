@@ -1,3 +1,5 @@
+**This repository is only a mirror, all developpment happens at [gitlab](https://gitlab.com/dbeniamine/vizardry)**
+
 # Vizardry
 
                 ________________ _______ _______ ______  _______
