@@ -13,6 +13,10 @@
 
                     A vim plugin manager for lazy people
 
+You hate that Micros\*\*\* bought Github ?  
+Do you now that Vizardry can install plugins from various sources since 2016 ?  
+See [Grimoire](#grimoire)
+
 ## Table of contents
 
 1. [Release notes](#release-notes)
